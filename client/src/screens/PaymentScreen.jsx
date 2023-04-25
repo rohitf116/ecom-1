@@ -6,7 +6,7 @@ import { getUserAddress, addUserAddress } from "../actions/userActions";
 import CheckoutSteps from "../components/CheckoutSteps";
 import FormContainer from "../components/FormContainer";
 
-const ShippingScreen = () => {
+const PaymentScreen = () => {
   const [street, setStreet] = useState("");
   const [postalCode, setPostalCode] = useState("");
   const [city, setCity] = useState("");
@@ -117,4 +117,4 @@ const ShippingScreen = () => {
   );
 };
 
-export default ShippingScreen;
+export default PaymentScreen;
