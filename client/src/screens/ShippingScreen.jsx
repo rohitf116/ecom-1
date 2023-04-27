@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Form, Button } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { getUserAddress, addUserAddress } from "../actions/userActions";
+import { savePaymentAddress } from "../actions/orderActions"
 import CheckoutSteps from "../components/CheckoutSteps";
 import FormContainer from "../components/FormContainer";
 
@@ -25,7 +26,7 @@ const ShippingScreen = () => {
     dispatch(getUserAddress());
   }, [dispatch]);
   useEffect(() => {
-    console.log(addAddressSuccess,"addAddressSuccess")
+    console.log(addAddressSuccess, "addAddressSuccess")
     if (addAddressSuccess) {
       dispatch(getUserAddress());
     }
@@ -40,21 +41,27 @@ const ShippingScreen = () => {
 
   const handleSelectAddress = (index) => {
     setSelectedAddress(index);
+    setStreet(addresses[index].street);
+    setCity(addresses[index].city);
+    setPostalCode(addresses[index].postalCode);
+    setCountry(addresses[index].country);
   };
 
   const handleAddAddressClick = () => {
     setAddAddress(true);
   };
   const navigate = useNavigate();
-  const handleContinue = () => {
+  const handleContinue = (e) => {
+    console.log(e.target)
     if (selectedAddress !== null) {
-      navigate('/some-path'); // Replace '/some-path' with the path you want to navigate to
+      dispatch(savePaymentAddress({ street, city, postalCode, country }))
+      navigate('/payment'); // Replace '/some-path' with the path you want to navigate to
     }
   };
   return (
     <FormContainer>
       <CheckoutSteps step1 step2 />
-       {addresses && addresses.length > 0 && !addAddress ? (
+      {addresses && addresses.length > 0 && !addAddress ? (
         <>
           <Form>
             {addresses.map((addr, index) => (
