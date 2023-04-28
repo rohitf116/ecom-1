@@ -18,7 +18,7 @@ import Message from "../components/Message";
 import Loader from "../components/Loader";
 import { addToCart } from "../actions/cartActions";
 const ProductScreen = () => {
-  const [qty, setQty] = useState(0);
+  const [qty, setQty] = useState(1);
   const navigate = useNavigate();
   const { id } = useParams();
   const productDetails = useSelector((state) => state.productDetails);
