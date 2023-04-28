@@ -13,6 +13,15 @@ const OrderSchema = new Schema(
       {
         productId: { type: ObjectId, refs: "Product", required: true },
         quantity: { type: Number, required: true, min: 1 },
+        name: {
+          type: String,
+          required: true,
+        },
+        price: { type: Number, required: true },
+        image: {
+          type: String,
+          required: true,
+        },
       },
     ],
 
@@ -33,7 +42,7 @@ const OrderSchema = new Schema(
       status: {
         type: String,
         default: "pending",
-        enum: ["pending", "completed", "cancelled"],
+        enum: ["pending", "COMPLETED", "cancelled"],
       },
       update_time: String,
       email_address: String,

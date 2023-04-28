@@ -5,3 +5,8 @@ exports.generateExpiry = () => {
   date.setMinutes(date.getMinutes() + 10);
   return date;
 };
+
+exports.getTotalItems = (items) => {
+  const totalQuantity = items.reduce((acc, item) => acc + item.quantity, 0);
+  return totalQuantity;
+};

@@ -35,7 +35,7 @@ const CartScreen = () => {
   console.log(items, "items");
   console.log(items.totalItems, "Hii");
   const carts = async (id, qty) => {
-    await dispatch(removeFromCart(id, qty));
+    dispatch(removeFromCart(id, qty));
   };
   const checkoutHandler = () => {
     navigate("/login?redirect=shipping");

@@ -31,11 +31,16 @@ exports.createCart = async (req, res) => {
         .status(404)
         .json({ status: false, message: "Product not found" });
     }
-
+    console.log(foundProduct, "ffffffffffffffffffff");
+    if (foundProduct.countInStock === 0 || foundProduct.countInStock < qty) {
+      return res
+        .status(404)
+        .json({ status: false, message: "Not enough product to buy" });
+    }
     const foundCart = await Cart.findOne({
       _id: foundUser.cart,
     });
-    console.log(foundCart);
+
     if (foundCart) {
       const isItemExsit = foundCart.items.find(
         (ele) => ele.productId.toString() === id

@@ -12,6 +12,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { getUserAddress, addUserAddress } from "../actions/userActions";
 import { savePaymentAddress } from "../actions/orderActions";
+import { createOrder } from "../actions/orderActions";
 import CheckoutSteps from "../components/CheckoutSteps";
 import Message from "../components/Message";
 
@@ -19,16 +20,28 @@ const PlaceOrderScreen = () => {
   const cart = useSelector((state) =>
     state?.cart?.cart ? state?.cart?.cart : state?.cart
   );
+  const dispatch = useDispatch();
   cart.shippingPrice = cart.totalPrice > 500 ? 0 : 100;
   cart.taxPrice = Number((0.18 * cart.totalPrice).toFixed(2));
   console.log(cart, "cart");
   const shippingAddress = useSelector(
     (state) => state?.shippingAddress?.shippingAddress
   );
+  console.log(shippingAddress, "shippingAddress");
   const paymentMethod = useSelector(
     (state) => state?.paymentMethod?.paymentMethod
   );
-  const placeOrderHandler = () => {};
+  const placeOrderHandler = () => {
+    dispatch(
+      createOrder(
+        cart._id,
+        paymentMethod,
+        cart.taxPrice,
+        cart.shippingPrice,
+        shippingAddress
+      )
+    );
+  };
   console.log(paymentMethod, "paymentMethod");
   return (
     <Container>

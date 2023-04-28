@@ -11,9 +11,16 @@ import {
   userRegisterReducer,
   userVerifyOtpReducer,
   userDetailReducer,
-  userAddressReducer,userAddAddressReducer
+  userAddressReducer,
+  userAddAddressReducer,
 } from "./reducers/userReducers";
-import {shippingAddressReducer,paymentMethodReducer} from "./reducers/orderReducer"
+import {
+  shippingAddressReducer,
+  paymentMethodReducer,
+  orderCreateReducer,
+  orderDetailsReducer,
+  orderPayReducer,
+} from "./reducers/orderReducer";
 const reducer = combineReducers({
   productList: productListReducer,
   productDetails: productDetailReducer,
@@ -22,10 +29,13 @@ const reducer = combineReducers({
   userRegister: userRegisterReducer,
   userVerifyOtp: userVerifyOtpReducer,
   userDetail: userDetailReducer,
-  userAddress:userAddressReducer,
-  userAddAddress:userAddAddressReducer,
-  shippingAddress:shippingAddressReducer,
-  paymentMethod:paymentMethodReducer
+  userAddress: userAddressReducer,
+  userAddAddress: userAddAddressReducer,
+  shippingAddress: shippingAddressReducer,
+  paymentMethod: paymentMethodReducer,
+  orderCreate: orderCreateReducer,
+  orderDetails: orderDetailsReducer,
+  orderPay: orderPayReducer,
 });
 const cartFormLocalStorage = localStorage.getItem("cart")
   ? JSON.parse(localStorage.getItem("cart"))
