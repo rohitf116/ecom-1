@@ -211,3 +211,16 @@ exports.updateOrderToPaid = async (req, res) => {
       .json({ status: false, message: "Server Error", error: error.message });
   }
 };
+
+exports.getMyOrders= async (req,res)=>{
+  try {
+    const user=req.user.id
+    const foundOrders= await Order.find({user})
+    res.status(200).json({status:true,message:"Users orders successfully fetched",data:foundOrders})
+  } catch (error) {
+    console.log(error);
+    res
+      .status(500)
+      .json({ status: false, message: "Server Error", error: error.message });
+  }
+}

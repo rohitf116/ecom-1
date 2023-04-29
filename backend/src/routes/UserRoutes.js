@@ -11,9 +11,9 @@ const {
   changePassword,
   addAddress,
   getAddress,
-  updateAddress,
+  updateAddress,getUsers
 } = require("../controller/UserController");
-const { isAuth } = require("../middleware/isAuth");
+const { isAuth ,isAdmin} = require("../middleware/isAuth");
 const { routeNotfound } = require("../middleware/notFound");
 const router = express.Router();
 
@@ -23,6 +23,7 @@ router
   .delete("/", isAuth, deleteUser)
   .patch("/", isAuth, updateUser)
   .put("/", changePassword);
+router.route("/all").get(isAuth,isAdmin,getUsers)
 router.post("/login", login);
 router.post("/verify", verifyEmailOtp);
 router.patch("/resent", regenerateEmailOTP);

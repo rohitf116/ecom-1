@@ -478,3 +478,19 @@ exports.updateAddress = async (req, res) => {
       .json({ status: false, message: "Server Error", error: error.message });
   }
 };
+
+exports.getUsers = async (req, res) => {
+  try {
+    const foundUser = await UserModel.find({ isDeleted: false}).select("-password -otp")
+    res.status(200).json({
+      status: true,
+      message: "All users fetched successfully",
+      data: foundUser,
+    });
+  } catch (error) {
+    console.log(error);
+    res
+      .status(500)
+      .json({ status: false, message: "Server Error", error: error.message });
+  }
+};

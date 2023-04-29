@@ -23,7 +23,6 @@ const PaymentScreen = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { id } = useParams();
-  console.log(id, "id");
   const orderDetails = useSelector((state) => state.orderDetails);
   const { loading, error, order } = orderDetails;
   const orderPay = useSelector((state) => state.orderPay);
@@ -36,6 +35,9 @@ const PaymentScreen = () => {
   console.log("sdkReady:", sdkReady);
   console.log("loading:", loading);
   console.log("loadingPay:", loadingPay);
+  useEffect(() => {
+    dispatch(getOrder(id));
+  }, [id]);
   useEffect(() => {
     console.log("Order object: ", order);
     console.log("successPay: ", successPay);
@@ -58,6 +60,7 @@ const PaymentScreen = () => {
     console.log(order, "order");
     console.log(order?.isPaid, "!order?.isPaid");
     console.log(!window.paypal, "!window.paypal");
+
     if (!order || successPay) {
       console.log("!order || successPay");
       dispatch({ type: ORDER_PAY_RESET });
@@ -166,7 +169,7 @@ const PaymentScreen = () => {
                     <Loader />
                   ) : (
                     <PayPalButton
-                      amount={order?.totalPrice}
+                      amount={Number((order?.totalPrice).toFixed(2))}
                       onSuccess={successPaymentHandler}
                     />
                   )}

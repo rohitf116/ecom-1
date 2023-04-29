@@ -42,3 +42,10 @@ exports.isAuth = async (req, res, next) => {
       .json({ status: false, message: "Server Error", error: error.message });
   }
 };
+
+exports.isAdmin= (req,res,next)=>{
+  if(!req.user.isAdmin){
+    return res.status(403).json({status:false,message:"You are not authorised to access this page"})
+  }
+  next()
+}
