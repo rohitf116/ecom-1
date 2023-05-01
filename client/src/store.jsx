@@ -12,7 +12,7 @@ import {
   userVerifyOtpReducer,
   userDetailReducer,
   userAddressReducer,
-  userAddAddressReducer,
+  userAddAddressReducer,userListReducer
 } from "./reducers/userReducers";
 import {
   shippingAddressReducer,
@@ -36,7 +36,8 @@ const reducer = combineReducers({
   orderCreate: orderCreateReducer,
   orderDetails: orderDetailsReducer,
   orderPay: orderPayReducer,
-  orderListMy:orderListMyReducer
+  orderListMy:orderListMyReducer,
+  userList:userListReducer
 });
 const cartFormLocalStorage = localStorage.getItem("cart")
   ? JSON.parse(localStorage.getItem("cart"))

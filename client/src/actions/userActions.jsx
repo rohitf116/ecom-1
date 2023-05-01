@@ -22,6 +22,9 @@ import {
   USER_ADD_ADDRESS_REQUEST,
   USER_ADD_ADDRESS_SUCCESS,
   USER_ADD_ADDRESS_FAIL,
+  USER_LIST_REQUEST,
+  USER_LIST_SUCCESS,
+  USER_LIST_FAIL,
 } from "../constants/userContants";
 
 console.log(USER_LOGIN_REQUEST, "USER_LOGIN_REQUEST");
@@ -58,7 +61,7 @@ export const login = (email, password) => async (dispatch) => {
 
 export const logout = () => (dispatch) => {
   localStorage.removeItem("userInfo");
- 
+
   dispatch({ type: USER_LOGOUT });
 };
 
@@ -201,7 +204,7 @@ export const clearLoginError = () => {
 
 export const updateUserPassword = (password) => async (dispach) => {};
 
-export const getUserAddress= ()=> async(dispatch)=>{
+export const getUserAddress = () => async (dispatch) => {
   try {
     // Access userInfo from the store's state
     const userInfo = store.getState().userLogin.userInfo;
@@ -235,41 +238,77 @@ export const getUserAddress= ()=> async(dispatch)=>{
           : error?.message,
     });
   }
-}
+};
 
-export const addUserAddress= (street,city,postalCode,country)=> async(dispatch)=>{
-  try {
-    // Access userInfo from the store's state
-    const userInfo = store.getState().userLogin.userInfo;
+export const addUserAddress =
+  (street, city, postalCode, country) => async (dispatch) => {
+    try {
+      // Access userInfo from the store's state
+      const userInfo = store.getState().userLogin.userInfo;
 
-    // Check if userInfo exists and has a token property
-    const token = userInfo && userInfo.token ? userInfo.token : "";
+      // Check if userInfo exists and has a token property
+      const token = userInfo && userInfo.token ? userInfo.token : "";
 
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`, // Use the token for the Authorization header
-      },
-    };
-    dispatch({ type: USER_ADD_ADDRESS_REQUEST });
-    // postalCode=Number(postalCode)
-    console.log(street,city,postalCode,country)
-    const { data } = await axios.post(
-      // Add the 'await' keyword here
-      "http://localhost:3001/api/v1/user/address",{street,city,postalCode,country},
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`, // Use the token for the Authorization header
+        },
+      };
+      dispatch({ type: USER_ADD_ADDRESS_REQUEST });
+      // postalCode=Number(postalCode)
+      console.log(street, city, postalCode, country);
+      const { data } = await axios.post(
+        // Add the 'await' keyword here
+        "http://localhost:3001/api/v1/user/address",
+        { street, city, postalCode, country },
 
-      config
-    );
-    console.log(data, "data");
-    dispatch({ type: USER_ADD_ADDRESS_SUCCESS, payload: data.data });
-  } catch (error) {
-    console.log(error);
-    dispatch({
-      type: USER_ADD_ADDRESS_FAIL,
-      payload:
-        error?.message && error?.response?.data?.message
-          ? error.response.data.message
-          : error?.message,
-    });
+        config
+      );
+      console.log(data, "data");
+      dispatch({ type: USER_ADD_ADDRESS_SUCCESS, payload: data.data });
+    } catch (error) {
+      console.log(error);
+      dispatch({
+        type: USER_ADD_ADDRESS_FAIL,
+        payload:
+          error?.message && error?.response?.data?.message
+            ? error.response.data.message
+            : error?.message,
+      });
+    }
+  };
+
+
+  export const getUsers=()=>async (dispatch)=>{
+    try {
+      // Access userInfo from the store's state
+      const userInfo = store.getState().userLogin.userInfo;
+
+      // Check if userInfo exists and has a token property
+      const token = userInfo && userInfo.token ? userInfo.token : "";
+
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`, // Use the token for the Authorization header
+        },
+      };
+      dispatch({ type: USER_LIST_REQUEST });
+      const { data } = await axios.get(
+        // Add the 'await' keyword here
+        "http://localhost:3001/api/v1/user/all",
+        config
+      );
+      dispatch({ type: USER_LIST_SUCCESS, payload: data.data });
+    } catch (error) {
+      console.log(error);
+      dispatch({
+        type: USER_LIST_FAIL,
+        payload:
+          error?.message && error?.response?.data?.message
+            ? error.response.data.message
+            : error?.message,
+      });
+    }
   }
-}
