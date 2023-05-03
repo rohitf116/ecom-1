@@ -27,6 +27,7 @@ import {
   USER_LIST_REQUEST,
   USER_LIST_SUCCESS,
   USER_LIST_FAIL,
+  USER_LIST_RESET,
 } from "../constants/userContants";
 
 export const loginReducer = (state = {}, action) => {
@@ -105,11 +106,10 @@ export const userUpdateProfileReducer = (state = {}, action) => {
   }
 };
 
-
 export const userAddressReducer = (state = {}, action) => {
   switch (action.type) {
     case USER_ADDRESS_REQUEST:
-      return { loading: true,address:[] };
+      return { loading: true, address: [] };
     case USER_ADDRESS_SUCCESS:
       return { loading: false, address: action.payload };
     case USER_ADDRESS_FAIL:
@@ -122,7 +122,7 @@ export const userAddressReducer = (state = {}, action) => {
 export const userAddAddressReducer = (state = {}, action) => {
   switch (action.type) {
     case USER_ADD_ADDRESS_REQUEST:
-      return { loading: true,currentAddress:{} };
+      return { loading: true, currentAddress: {} };
     case USER_ADD_ADDRESS_SUCCESS:
       return { loading: false, currentAddress: action.payload };
     case USER_ADD_ADDRESS_FAIL:
@@ -132,16 +132,18 @@ export const userAddAddressReducer = (state = {}, action) => {
   }
 };
 
-
-export const userListReducer= (state={users:[]},action)=>{
+export const userListReducer = (state = { users: [] }, action) => {
   switch (action.type) {
     case USER_LIST_REQUEST:
-      return { loading: true,users:[] };
+      return { loading: true, users: [] };
     case USER_LIST_SUCCESS:
       return { loading: false, users: action.payload };
     case USER_LIST_FAIL:
       return { loading: false, error: action.payload };
+    case USER_LIST_RESET:
+      return { loading: false, users: [] };
+    //USER_LIST_CLEAR
     default:
       return state;
   }
-}
+};

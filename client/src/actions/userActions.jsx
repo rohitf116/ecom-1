@@ -25,6 +25,7 @@ import {
   USER_LIST_REQUEST,
   USER_LIST_SUCCESS,
   USER_LIST_FAIL,
+  USER_LIST_RESET,
 } from "../constants/userContants";
 
 console.log(USER_LOGIN_REQUEST, "USER_LOGIN_REQUEST");
@@ -63,6 +64,7 @@ export const logout = () => (dispatch) => {
   localStorage.removeItem("userInfo");
 
   dispatch({ type: USER_LOGOUT });
+  dispatch({ type: USER_LIST_RESET });
 };
 
 export const register =
@@ -279,36 +281,35 @@ export const addUserAddress =
     }
   };
 
+export const getUsers = () => async (dispatch) => {
+  try {
+    // Access userInfo from the store's state
+    const userInfo = store.getState().userLogin.userInfo;
 
-  export const getUsers=()=>async (dispatch)=>{
-    try {
-      // Access userInfo from the store's state
-      const userInfo = store.getState().userLogin.userInfo;
+    // Check if userInfo exists and has a token property
+    const token = userInfo && userInfo.token ? userInfo.token : "";
 
-      // Check if userInfo exists and has a token property
-      const token = userInfo && userInfo.token ? userInfo.token : "";
-
-      const config = {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`, // Use the token for the Authorization header
-        },
-      };
-      dispatch({ type: USER_LIST_REQUEST });
-      const { data } = await axios.get(
-        // Add the 'await' keyword here
-        "http://localhost:3001/api/v1/user/all",
-        config
-      );
-      dispatch({ type: USER_LIST_SUCCESS, payload: data.data });
-    } catch (error) {
-      console.log(error);
-      dispatch({
-        type: USER_LIST_FAIL,
-        payload:
-          error?.message && error?.response?.data?.message
-            ? error.response.data.message
-            : error?.message,
-      });
-    }
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`, // Use the token for the Authorization header
+      },
+    };
+    dispatch({ type: USER_LIST_REQUEST });
+    const { data } = await axios.get(
+      // Add the 'await' keyword here
+      "http://localhost:3001/api/v1/user/all",
+      config
+    );
+    dispatch({ type: USER_LIST_SUCCESS, payload: data.data });
+  } catch (error) {
+    console.log(error);
+    dispatch({
+      type: USER_LIST_FAIL,
+      payload:
+        error?.message && error?.response?.data?.message
+          ? error.response.data.message
+          : error?.message,
+    });
   }
+};
