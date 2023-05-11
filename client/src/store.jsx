@@ -12,14 +12,17 @@ import {
   userVerifyOtpReducer,
   userDetailReducer,
   userAddressReducer,
-  userAddAddressReducer,userListReducer
+  userAddAddressReducer,
+  userListReducer,
+  userDeleteReducer,
 } from "./reducers/userReducers";
 import {
   shippingAddressReducer,
   paymentMethodReducer,
   orderCreateReducer,
   orderDetailsReducer,
-  orderPayReducer,orderListMyReducer
+  orderPayReducer,
+  orderListMyReducer,
 } from "./reducers/orderReducer";
 const reducer = combineReducers({
   productList: productListReducer,
@@ -36,8 +39,9 @@ const reducer = combineReducers({
   orderCreate: orderCreateReducer,
   orderDetails: orderDetailsReducer,
   orderPay: orderPayReducer,
-  orderListMy:orderListMyReducer,
-  userList:userListReducer
+  orderListMy: orderListMyReducer,
+  userList: userListReducer,
+  userDelete: userDeleteReducer,
 });
 const cartFormLocalStorage = localStorage.getItem("cart")
   ? JSON.parse(localStorage.getItem("cart"))

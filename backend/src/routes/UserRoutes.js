@@ -11,9 +11,12 @@ const {
   changePassword,
   addAddress,
   getAddress,
-  updateAddress,getUsers
+  updateAddress,
+  getUsers,
+  deleteuserByAdmin,
+  getUserByIdAdmin,
 } = require("../controller/UserController");
-const { isAuth ,isAdmin} = require("../middleware/isAuth");
+const { isAuth, isAdmin } = require("../middleware/isAuth");
 const { routeNotfound } = require("../middleware/notFound");
 const router = express.Router();
 
@@ -23,7 +26,7 @@ router
   .delete("/", isAuth, deleteUser)
   .patch("/", isAuth, updateUser)
   .put("/", changePassword);
-router.route("/all").get(isAuth,isAdmin,getUsers)
+router.route("/all").get(isAuth, isAdmin, getUsers);
 router.post("/login", login);
 router.post("/verify", verifyEmailOtp);
 router.patch("/resent", regenerateEmailOTP);
@@ -32,6 +35,9 @@ router
   .get("/address", isAuth, getAddress)
   .put("/address", isAuth, updateAddress);
 // router.get("/:id", getProductDetails);
+
+router.route("/admin/:id").delete(isAuth, isAdmin, deleteuserByAdmin);
+router.route("/admin/:id").get(isAuth, isAdmin, getUserByIdAdmin);
 router.use("*", routeNotfound);
 
 module.exports = router;

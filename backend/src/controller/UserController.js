@@ -534,11 +534,42 @@ exports.updateUserByAdmin = async (req, res) => {
     if (!foundUser) {
       return res.status(404).json({ status: false, message: "User not found" });
     }
-    name && isValid(name) ?foundUser.name
+    name && isValid(name)
+      ? (foundUser.name = name)
+      : (foundUser.name = foundUser.name);
+    email && isValid(email) && isValidEmail(email)
+      ? (foundUser.email.value = email)
+      : (foundUser.email.value = foundUser.email.value);
     await foundUser.save();
     res
       .status(200)
-      .json({ status: true, message: "User is succesfully deleted by admin" });
+      .json({ status: true, message: "User is succesfully update by admin" });
+  } catch (error) {
+    console.log(error);
+    res
+      .status(500)
+      .json({ status: false, message: "Server Error", error: error.message });
+  }
+};
+exports.getUserByIdAdmin = async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!isValidObjectId(id)) {
+      return res
+        .status(400)
+        .json({ status: false, message: "Invalid Object id" });
+    }
+    const foundUser = await UserModel.findOne({ _id: id, isDeleted: false });
+    if (!foundUser) {
+      return res.status(404).json({ status: false, message: "User not found" });
+    }
+    res
+      .status(200)
+      .json({
+        status: true,
+        message: "User is succesfully fetched by admin",
+        data: foundUser,
+      });
   } catch (error) {
     console.log(error);
     res

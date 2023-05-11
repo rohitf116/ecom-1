@@ -26,6 +26,9 @@ import {
   USER_LIST_SUCCESS,
   USER_LIST_FAIL,
   USER_LIST_RESET,
+  USER_DELETE_FAIL,
+  USER_DELETE_SUCCESS,
+  USER_DELETE_REQUEST,
 } from "../constants/userContants";
 
 console.log(USER_LOGIN_REQUEST, "USER_LOGIN_REQUEST");
@@ -306,6 +309,39 @@ export const getUsers = () => async (dispatch) => {
     console.log(error);
     dispatch({
       type: USER_LIST_FAIL,
+      payload:
+        error?.message && error?.response?.data?.message
+          ? error.response.data.message
+          : error?.message,
+    });
+  }
+};
+
+export const deleteUsers = (id) => async (dispatch) => {
+  try {
+    // Access userInfo from the store's state
+    const userInfo = store.getState().userLogin.userInfo;
+
+    // Check if userInfo exists and has a token property
+    const token = userInfo && userInfo.token ? userInfo.token : "";
+
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`, // Use the token for the Authorization header
+      },
+    };
+    dispatch({ type: USER_DELETE_REQUEST });
+    const { data } = await axios.delete(
+      // Add the 'await' keyword here
+      `http://localhost:3001/api/v1/user/admin/${id}`,
+      config
+    );
+    dispatch({ type: USER_DELETE_SUCCESS, payload: data.data });
+  } catch (error) {
+    console.log(error);
+    dispatch({
+      type: USER_DELETE_FAIL,
       payload:
         error?.message && error?.response?.data?.message
           ? error.response.data.message

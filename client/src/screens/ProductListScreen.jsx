@@ -1,38 +1,48 @@
 import { Link, useNavigate } from "react-router-dom";
-import { Table, Button, Container } from "react-bootstrap";
+import { Table, Button, Container, Row, Col } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import Message from "../components/Message";
 
 import Loader from "../components/Loader";
-import { getUsers, deleteUsers } from "../actions/userActions";
+import { listProducts } from "../actions/productActions";
 import { useEffect } from "react";
 import { LinkContainer } from "react-router-bootstrap";
 
-const UserListScreen = () => {
+const ProductListScreen = () => {
   const dispach = useDispatch();
-  const userList = useSelector((state) => state.userList);
+  const productList = useSelector((state) => state.productList);
+  const { loading, error, products } = productList;
   const userLogin = useSelector((state) => state.userLogin);
-  const userDelete = useSelector((state) => state.userDelete);
-  const { success: successDelete } = userDelete;
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { userInfo } = userLogin;
   const deleteUserHandler = (id) => {
     if (window.confirm("Are you sure?")) {
-      dispach(deleteUsers(id));
     }
   };
   useEffect(() => {
     if (userInfo && userInfo.isAdmin) {
-      dispach(getUsers());
+      dispach(listProducts());
     } else {
       navigate("/");
     }
-  }, [navigate, dispach, successDelete]);
-  const { loading, error, users } = userList;
+  }, [navigate, dispach, userInfo]);
+  const createProduct = () => {};
+  const deleteProductHandler = () => {};
   return (
     <>
-      <h1>Users</h1>
+      <Row className="align-item-center">
+        <Col>
+          <h1>Products</h1>
+        </Col>
+        <Col className="text-right">
+          <Button className="my-3" onClick={createProduct}>
+            <i className="fas fa-plus"></i> Add Product
+          </Button>
+        </Col>
+      </Row>
+
       {loading ? (
         <Loader />
       ) : error ? (
@@ -43,23 +53,24 @@ const UserListScreen = () => {
             <tr>
               <th>ID</th>
               <th>NAME</th>
-              <th>EMAIL</th>
-              <th>ADMIN</th>
+              <th>PRICE</th>
+              <th>CATEGORY</th>
+              <th>BRAND</th>
+              <th>DETAILS</th>
             </tr>
           </thead>
           <tbody>
-            {users.map((user) => (
-              <tr key={user._id}>
-                <td>{user._id}</td>
-                <td>{user.name}</td>
-                <td>{user.email.value}</td>
+            {products.map((product) => (
+              <tr key={product._id}>
+                <td>{product._id}</td>
+                <td>{product.name}</td>
+                <td> ${product.price}</td>
+                <td> {product.category}</td>
+                <td> {product?.brand || "No Brand"}</td>
                 <td>
-                  {user.isAdmin ? (
-                    <i className="fas fa-check" style={{ color: "green" }}></i>
-                  ) : (
-                    <i className="fas fa-times" style={{ color: "red" }}></i>
-                  )}
+                  <Link to={`/${product._id}`}>Link </Link>
                 </td>
+
                 <td>
                   <Button variant="light" className="btn-sm">
                     <i className="fas fa-edit"></i>
@@ -68,7 +79,7 @@ const UserListScreen = () => {
                   <Button
                     variant="danger"
                     className="btn-sm"
-                    onClick={() => deleteUserHandler(user._id)}
+                    onClick={() => deleteProductHandler(product._id)}
                   >
                     <i className="fas fa-trash"></i>
                   </Button>
@@ -82,4 +93,4 @@ const UserListScreen = () => {
   );
 };
 
-export default UserListScreen;
+export default ProductListScreen;
