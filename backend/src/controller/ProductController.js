@@ -195,4 +195,29 @@ exports.updateProduct = async (req, res) => {
   }
 };
 
-exports.deleteProduct = async (req, res) => {};
+exports.deleteProduct = async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!isValidObjectId(id)) {
+      return res
+        .status(400)
+        .json({ status: false, message: "Invalid object id" });
+    }
+    const foundProduct = await Product.findOne({ isDeleted: false, _id: id });
+    if (!foundProduct) {
+      return res
+        .status(404)
+        .json({ status: false, message: "Product not found" });
+    }
+    await foundProduct.remove();
+    res.status(200).json({
+      status: true,
+      message: "Productdetails successfully deleted",
+    });
+  } catch (error) {
+    console.log(error);
+    res
+      .status(500)
+      .json({ status: false, message: "Server Error", error: error });
+  }
+};
