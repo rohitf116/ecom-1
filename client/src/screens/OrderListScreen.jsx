@@ -4,37 +4,29 @@ import { useDispatch, useSelector } from "react-redux";
 import Message from "../components/Message";
 
 import Loader from "../components/Loader";
-import { listProducts, deleteProduct } from "../actions/productActions";
+import { getOrderList } from "../actions/orderActions";
 import { useEffect } from "react";
 import { LinkContainer } from "react-router-bootstrap";
 
-const ProductListScreen = () => {
+const OrderListScreen = () => {
   const dispach = useDispatch();
-  const productList = useSelector((state) => state.productList);
-  const { loading, error, products } = productList;
+  const orderList = useSelector((state) => state.orderList);
+  console.log(orderList, "orderList");
+  const { loading, error, orders } = orderList;
+  console.log(orders, "orders");
   const userLogin = useSelector((state) => state.userLogin);
-  const productDelete = useSelector((state) => state.deleteProduct);
-  const {
-    loading: deleteLoading,
-    success: deleteSuccess,
-    error: deleteError,
-  } = productDelete;
-  console.log(productDelete, "productDelete");
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { userInfo } = userLogin;
-  const deleteProductHandler = (id) => {
-    if (window.confirm("Are you sure?")) {
-    }
-    dispach(deleteProduct(id));
-  };
+
   useEffect(() => {
     if (userInfo && userInfo.isAdmin) {
-      dispach(listProducts());
+      dispach(getOrderList());
     } else {
       navigate("/");
     }
-  }, [navigate, dispach, userInfo, deleteSuccess]);
+  }, [navigate, dispach, userInfo]);
   const createProduct = () => {};
   const gotoUpdate = (product, id) => {
     console.log(product, id);
@@ -42,9 +34,11 @@ const ProductListScreen = () => {
   };
   return (
     <>
+      {error && <Message variant="danger">{error}</Message>}
+      {loading && <Loader />}
       <Row className="align-item-center">
         <Col>
-          <h1>Products</h1>
+          <h1>Orders</h1>
         </Col>
         <Col className="text-right">
           <Button className="my-3" onClick={createProduct}>
@@ -62,40 +56,49 @@ const ProductListScreen = () => {
           <thead>
             <tr>
               <th>ID</th>
-              <th>NAME</th>
-              <th>PRICE</th>
-              <th>CATEGORY</th>
-              <th>BRAND</th>
-              <th>DETAILS</th>
+              <th>USER</th>
+
+              <th>TOTAL_PRICE</th>
+
+              <th>PAID</th>
+              <th>DELIVERED</th>
+              <th>DATE</th>
             </tr>
           </thead>
           <tbody>
-            {products.map((product) => (
-              <tr key={product._id}>
-                <td>{product._id}</td>
-                <td>{product.name}</td>
-                <td> ${product.price}</td>
-                <td> {product.category}</td>
-                <td> {product?.brand || "No Brand"}</td>
+            {orders.map((order) => (
+              <tr key={order._id}>
+                <td>{order._id}</td>
+                <td> ${order.user}</td>
+
+                <td> {order.totalPrice}</td>
+
                 <td>
-                  <Link to={`/${product._id}`}>Link </Link>
+                  {order.isPaid ? (
+                    <i className="fas fa-check" style={{ color: "green" }}></i>
+                  ) : (
+                    <i className="fas fa-times" style={{ color: "red" }}></i>
+                  )}
+                </td>
+                <td>
+                  {order.isDelevered ? (
+                    <i className="fas fa-check" style={{ color: "green" }}></i>
+                  ) : (
+                    <i className="fas fa-times" style={{ color: "red" }}></i>
+                  )}
+                </td>
+                <td> {order?.createdAt}</td>
+                <td>
+                  <Link to={`/${order._id}`}>Link </Link>
                 </td>
 
                 <td>
                   <Button
                     variant="light"
                     className="btn-sm"
-                    onClick={() => gotoUpdate(product, product._id)}
+                    onClick={() => gotoUpdate(order, order._id)}
                   >
                     <i className="fas fa-edit"></i>
-                  </Button>
-
-                  <Button
-                    variant="danger"
-                    className="btn-sm"
-                    onClick={() => deleteProductHandler(product._id)}
-                  >
-                    <i className="fas fa-trash"></i>
                   </Button>
                 </td>
               </tr>
@@ -107,4 +110,4 @@ const ProductListScreen = () => {
   );
 };
 
-export default ProductListScreen;
+export default OrderListScreen;

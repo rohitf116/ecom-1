@@ -212,15 +212,70 @@ exports.updateOrderToPaid = async (req, res) => {
   }
 };
 
-exports.getMyOrders= async (req,res)=>{
+exports.getMyOrders = async (req, res) => {
   try {
-    const user=req.user.id
-    const foundOrders= await Order.find({user})
-    res.status(200).json({status:true,message:"Users orders successfully fetched",data:foundOrders})
+    const user = req.user.id;
+    const foundOrders = await Order.find({ user });
+    res.status(200).json({
+      status: true,
+      message: "Users orders successfully fetched",
+      data: foundOrders,
+    });
   } catch (error) {
     console.log(error);
     res
       .status(500)
       .json({ status: false, message: "Server Error", error: error.message });
   }
-}
+};
+
+exports.getAllOrders = async (req, res) => {
+  try {
+    const foundOrders = await Order.find();
+    res.status(200).json({
+      status: true,
+      message: "Users orders successfully fetched by admin",
+      data: foundOrders,
+    });
+  } catch (error) {
+    console.log(error);
+    res
+      .status(500)
+      .json({ status: false, message: "Server Error", error: error.message });
+  }
+};
+
+exports.markasDelivered = async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!isValidObjectId(id)) {
+      return res.status(400).json({
+        status: false,
+        message: `Invalid object id`,
+      });
+    }
+    const foundOrder = await Order.findOne({ _id: id });
+    if (!foundOrder) {
+      return res
+        .status(404)
+        .json({ status: false, message: "Order not found" });
+    }
+    console.log(foundOrder);
+    if (foundOrder.isDelevered) {
+      return res
+        .status(400)
+        .json({ status: false, message: "Already delivered" });
+    }
+    foundOrder.isDelevered = true;
+    await foundOrder.save();
+    res.status(200).json({
+      status: true,
+      message: "This orders is marked as delivered by admin",
+    });
+  } catch (error) {
+    console.log(error);
+    res
+      .status(500)
+      .json({ status: false, message: "Server Error", error: error.message });
+  }
+};

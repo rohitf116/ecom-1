@@ -11,6 +11,9 @@ import {
   PRODUCT_CREATE_REQUEST,
   PRODUCT_CREATE_SUCCESS,
   PRODUCT_CREATE_FAIL,
+  PRODUCT_UPDATE_REQUEST,
+  PRODUCT_UPDATE_SUCCESS,
+  PRODUCT_UPDATE_FAIL,
 } from "../constants/productContants";
 import store from "../store"; // Import the store
 import axios from "axios";
@@ -113,6 +116,42 @@ export const productCreate =
       console.log(error);
       dispatch({
         type: PRODUCT_CREATE_FAIL,
+        payload:
+          error?.message && error?.response?.data?.message
+            ? error.response.data.message
+            : error?.message,
+      });
+    }
+  };
+export const updateProduct =
+  (name, description, brand, category, price, countInStock, file, id) =>
+  async (dispatch) => {
+    try {
+      console.log(brand);
+      const userInfo = store.getState().userLogin.userInfo;
+
+      // Check if userInfo exists and has a token property
+      const token = userInfo && userInfo.token ? userInfo.token : "";
+
+      const config = {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`, // Use the token for the Authorization header
+        },
+      };
+      dispatch({ type: PRODUCT_UPDATE_REQUEST });
+      const { data } = await axios.put(
+        // Add the 'await' keyword here
+        `http://localhost:3001/api/v1/product/${id}`,
+        { name, description, brand, category, price, countInStock, file },
+        config
+      );
+      console.log(data);
+      dispatch({ type: PRODUCT_UPDATE_SUCCESS, payload: data.data });
+    } catch (error) {
+      console.log(error);
+      dispatch({
+        type: PRODUCT_UPDATE_FAIL,
         payload:
           error?.message && error?.response?.data?.message
             ? error.response.data.message

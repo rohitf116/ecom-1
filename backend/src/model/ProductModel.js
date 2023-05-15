@@ -13,6 +13,7 @@ const ProductSchema = new Schema(
       type: String,
       required: true,
     },
+    brand: { type: String, required: true, dafult: "No Brand" },
 
     description: {
       type: String,

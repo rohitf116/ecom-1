@@ -10,7 +10,12 @@ import {
   ORDER_PAY_REQUEST,
   ORDER_PAY_SUCCESS,
   ORDER_PAY_FAIL,
-  ORDER_LIST_MY_REQUEST, ORDER_LIST_MY_SUCCESS, ORDER_LIST_MY_FAIL
+  ORDER_LIST_MY_REQUEST,
+  ORDER_LIST_MY_SUCCESS,
+  ORDER_LIST_MY_FAIL,
+  ORDER_LIST_REQUEST,
+  ORDER_LIST_SUCCESS,
+  ORDER_LIST_FAIL,
 } from "../constants/orderContants";
 import axios from "axios";
 import store from "../store"; // Import the store
@@ -31,41 +36,41 @@ export const savePaymentMethod = (method) => (dispatch) => {
 };
 export const createOrder =
   (_id, paymentMethod, taxPrice, shippingPrice, shippingAddress) =>
-    async (dispatch) => {
-      try {
-        // Access userInfo from the store's state
-        const userInfo = store.getState().userLogin.userInfo;
-        console.log(_id, "_id");
-        // Check if userInfo exists and has a token property
-        const token = userInfo && userInfo.token ? userInfo.token : "";
+  async (dispatch) => {
+    try {
+      // Access userInfo from the store's state
+      const userInfo = store.getState().userLogin.userInfo;
+      console.log(_id, "_id");
+      // Check if userInfo exists and has a token property
+      const token = userInfo && userInfo.token ? userInfo.token : "";
 
-        const config = {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`, // Use the token for the Authorization header
-          },
-        };
-        dispatch({ type: ORDER_CREATE_REQUEST });
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`, // Use the token for the Authorization header
+        },
+      };
+      dispatch({ type: ORDER_CREATE_REQUEST });
 
-        const { data } = await axios.post(
-          // Add the 'await' keyword here
-          "http://localhost:3001/api/v1/order",
-          { _id, paymentMethod, taxPrice, shippingPrice, shippingAddress },
-          config
-        );
-        console.log(data, "data");
-        dispatch({ type: ORDER_CREATE_SUCCESS, payload: data.data });
-      } catch (error) {
-        console.log(error);
-        dispatch({
-          type: ORDER_CREATE_FAIL,
-          payload:
-            error?.message && error?.response?.data?.message
-              ? error.response.data.message
-              : error?.message,
-        });
-      }
-    };
+      const { data } = await axios.post(
+        // Add the 'await' keyword here
+        "http://localhost:3001/api/v1/order",
+        { _id, paymentMethod, taxPrice, shippingPrice, shippingAddress },
+        config
+      );
+      console.log(data, "data");
+      dispatch({ type: ORDER_CREATE_SUCCESS, payload: data.data });
+    } catch (error) {
+      console.log(error);
+      dispatch({
+        type: ORDER_CREATE_FAIL,
+        payload:
+          error?.message && error?.response?.data?.message
+            ? error.response.data.message
+            : error?.message,
+      });
+    }
+  };
 
 export const getOrder = (id) => async (dispatch) => {
   try {
@@ -162,6 +167,40 @@ export const getMyOrder = () => async (dispatch) => {
     console.log(error);
     dispatch({
       type: ORDER_LIST_MY_FAIL,
+      payload:
+        error?.message && error?.response?.data?.message
+          ? error.response.data.message
+          : error?.message,
+    });
+  }
+};
+
+export const getOrderList = () => async (dispatch) => {
+  try {
+    // Access userInfo from the store's state
+    const userInfo = store.getState().userLogin.userInfo;
+    // Check if userInfo exists and has a token property
+    const token = userInfo && userInfo.token ? userInfo.token : "";
+
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`, // Use the token for the Authorization header
+      },
+    };
+    dispatch({ type: ORDER_LIST_REQUEST });
+
+    const { data } = await axios.get(
+      // Add the 'await' keyword here
+      `http://localhost:3001/api/v1/order/admin`,
+      config
+    );
+    console.log(data, "data");
+    dispatch({ type: ORDER_LIST_SUCCESS, payload: data.data });
+  } catch (error) {
+    console.log(error);
+    dispatch({
+      type: ORDER_LIST_FAIL,
       payload:
         error?.message && error?.response?.data?.message
           ? error.response.data.message

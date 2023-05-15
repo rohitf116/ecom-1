@@ -31,7 +31,7 @@ const UserListScreen = () => {
   }, [navigate, dispach, successDelete]);
   const { loading, error, users } = userList;
   return (
-    <>
+    <Container>
       <h1>Users</h1>
       {loading ? (
         <Loader />
@@ -78,7 +78,7 @@ const UserListScreen = () => {
           </tbody>
         </Table>
       )}
-    </>
+    </Container>
   );
 };
 
