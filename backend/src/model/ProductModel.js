@@ -31,6 +31,7 @@ const ProductSchema = new Schema(
       type: Number,
       default: 0,
     },
+    isDeleted: { type: Boolean, default: false },
     rating: {
       type: Number,
       default: 0,

@@ -5,7 +5,14 @@ import {
   PRODUCT_DETAIL_REQUEST,
   PRODUCT_DETAIL_SUCCESS,
   PRODUCT_DETAIL_FAIL,
+  PRODUCT_DELETE_REQUEST,
+  PRODUCT_DELETE_SUCCESS,
+  PRODUCT_DELETE_FAIL,
+  PRODUCT_CREATE_REQUEST,
+  PRODUCT_CREATE_SUCCESS,
+  PRODUCT_CREATE_FAIL,
 } from "../constants/productContants";
+import store from "../store"; // Import the store
 import axios from "axios";
 export const listProducts = () => async (dispatch) => {
   try {
@@ -45,3 +52,71 @@ export const listProductDeatils = (id) => async (dispatch) => {
     });
   }
 };
+
+export const deleteProduct = (id) => async (dispatch) => {
+  try {
+    const userInfo = store.getState().userLogin.userInfo;
+
+    // Check if userInfo exists and has a token property
+    const token = userInfo && userInfo.token ? userInfo.token : "";
+
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`, // Use the token for the Authorization header
+      },
+    };
+    dispatch({ type: PRODUCT_DELETE_REQUEST });
+    const { data } = await axios.delete(
+      // Add the 'await' keyword here
+      `http://localhost:3001/api/v1/product/admin/${id}`,
+      config
+    );
+    dispatch({ type: PRODUCT_DELETE_SUCCESS, payload: data.data });
+  } catch (error) {
+    console.log(error);
+    dispatch({
+      type: PRODUCT_DELETE_FAIL,
+      payload:
+        error?.message && error?.response?.data?.message
+          ? error.response.data.message
+          : error?.message,
+    });
+  }
+};
+
+export const productCreate =
+  (name, description, brand, category, price, countInStock, file) =>
+  async (dispatch) => {
+    try {
+      const userInfo = store.getState().userLogin.userInfo;
+
+      // Check if userInfo exists and has a token property
+      const token = userInfo && userInfo.token ? userInfo.token : "";
+
+      const config = {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`, // Use the token for the Authorization header
+        },
+      };
+      dispatch({ type: PRODUCT_CREATE_REQUEST });
+      const { data } = await axios.post(
+        // Add the 'await' keyword here
+        `http://localhost:3001/api/v1/product`,
+        { name, description, brand, category, price, countInStock, file },
+        config
+      );
+      console.log(data);
+      dispatch({ type: PRODUCT_CREATE_SUCCESS, payload: data.data });
+    } catch (error) {
+      console.log(error);
+      dispatch({
+        type: PRODUCT_CREATE_FAIL,
+        payload:
+          error?.message && error?.response?.data?.message
+            ? error.response.data.message
+            : error?.message,
+      });
+    }
+  };

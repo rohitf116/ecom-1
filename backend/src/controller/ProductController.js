@@ -2,21 +2,19 @@
 const Product = require("../model/ProductModel");
 
 const { isValid, isValidObjectId } = require("../utils/regex");
+const { uploadFile } = require("../utils/aws");
 
 exports.createProduct = async (req, res) => {
   try {
     const { name, image, description, brand, category, price, countInStock } =
       req.body;
+    console.log(req.body);
     if (!isValid(name)) {
       return res
         .status(400)
         .json({ status: false, message: "Name cannot be empty" });
     }
-    if (!isValid(image)) {
-      return res
-        .status(400)
-        .json({ status: false, message: "image cannot be empty" });
-    }
+
     if (!isValid(description)) {
       return res
         .status(400)
@@ -50,9 +48,23 @@ exports.createProduct = async (req, res) => {
         .status(400)
         .json({ status: false, message: "countInStock must be a number" });
     }
+    const file = req?.files[0] || null;
+    console.log(file, "file");
+    if (!file) {
+      return res
+        .status(400)
+        .json({ status: false, message: "Image is required" });
+    }
+    if (file.mimetype !== "image/png" && file.mimetype !== "image/jpeg") {
+      return res
+        .status(406)
+        .json({ status: false, message: "Only images are allowed" });
+    }
+    const imageUrl = await uploadFile(file);
+    console.log(file);
     const producrCreated = await Product.create({
       name,
-      image,
+      image: imageUrl,
       description,
       brand,
       category,
@@ -209,7 +221,8 @@ exports.deleteProduct = async (req, res) => {
         .status(404)
         .json({ status: false, message: "Product not found" });
     }
-    await foundProduct.remove();
+    foundProduct.isDeleted = true;
+    await foundProduct.save();
     res.status(200).json({
       status: true,
       message: "Productdetails successfully deleted",

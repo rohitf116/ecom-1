@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Message from "../components/Message";
 
 import Loader from "../components/Loader";
-import { listProducts } from "../actions/productActions";
+import { listProducts, deleteProduct } from "../actions/productActions";
 import { useEffect } from "react";
 import { LinkContainer } from "react-router-bootstrap";
 
@@ -13,13 +13,20 @@ const ProductListScreen = () => {
   const productList = useSelector((state) => state.productList);
   const { loading, error, products } = productList;
   const userLogin = useSelector((state) => state.userLogin);
-
+  const productDelete = useSelector((state) => state.deleteProduct);
+  const {
+    loading: deleteLoading,
+    success: deleteSuccess,
+    error: deleteError,
+  } = productDelete;
+  console.log(productDelete, "productDelete");
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { userInfo } = userLogin;
-  const deleteUserHandler = (id) => {
+  const deleteProductHandler = (id) => {
     if (window.confirm("Are you sure?")) {
     }
+    dispach(deleteProduct(id));
   };
   useEffect(() => {
     if (userInfo && userInfo.isAdmin) {
@@ -27,9 +34,9 @@ const ProductListScreen = () => {
     } else {
       navigate("/");
     }
-  }, [navigate, dispach, userInfo]);
+  }, [navigate, dispach, userInfo, deleteSuccess]);
   const createProduct = () => {};
-  const deleteProductHandler = () => {};
+
   return (
     <>
       <Row className="align-item-center">

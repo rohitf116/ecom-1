@@ -4,8 +4,8 @@ const aws = require("aws-sdk");
 dotenv.config();
 
 aws.config.update({
-  accessKeyId: process.env.accessKeyId,
-  secretAccessKey: process.env.secretAccessKey,
+  accessKeyId: process.env.ACCESS_KEYS,
+  secretAccessKey: process.env.SECRET_KEYS,
   region: "ap-south-1",
 });
 
@@ -16,8 +16,8 @@ exports.uploadFile = async (file) => {
 
     var uploadParams = {
       ACL: "public-read",
-      Bucket: "main-bucket-production", //HERE
-      Key: "assets/" + Date.now().toString() + file.originalname, //HERE
+      Bucket: "nottodeletethis", //HERE
+      Key: "ecom/" + Date.now().toString() + file.originalname, //HERE
       Body: file.buffer,
     };
 

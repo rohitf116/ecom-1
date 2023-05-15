@@ -4,6 +4,8 @@ import { composeWithDevTools } from "redux-devtools-extension";
 import {
   productListReducer,
   productDetailReducer,
+  productDeleteReducer,
+  productCreateReducer,
 } from "./reducers/productReducers";
 import { cartReducer } from "./reducers/cartReducers";
 import {
@@ -42,6 +44,8 @@ const reducer = combineReducers({
   orderListMy: orderListMyReducer,
   userList: userListReducer,
   userDelete: userDeleteReducer,
+  deleteProduct: productDeleteReducer,
+  createProduct: productCreateReducer,
 });
 const cartFormLocalStorage = localStorage.getItem("cart")
   ? JSON.parse(localStorage.getItem("cart"))

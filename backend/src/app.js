@@ -10,6 +10,7 @@ const app = express();
 dotevn.config();
 app.use(express.json());
 app.use(cors());
+app.use(multer().any());
 app.use(cookieParser());
 
 if (process.env.NODE_ENV == "development") {
