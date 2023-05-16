@@ -19,12 +19,12 @@ exports.isAuth = async (req, res, next) => {
     if (!tokennWithout || isNaN(decoded?.version)) {
       return res.status(401).json({
         status: false,
-        message: "token should start with Bearer and token should be valud",
+        message: "token should start with Bearer and token should be valid",
       });
     }
     jwt.verify(
       tokennWithout,
-      secret + decoded.version || 0,
+      secret + decoded.version || 1,
       (error, response) => {
         if (error) {
           return res
@@ -45,12 +45,10 @@ exports.isAuth = async (req, res, next) => {
 
 exports.isAdmin = (req, res, next) => {
   if (!req.user.isAdmin) {
-    return res
-      .status(403)
-      .json({
-        status: false,
-        message: "You are not authorised to access this page",
-      });
+    return res.status(403).json({
+      status: false,
+      message: "You are not authorised to access this page",
+    });
   }
   next();
 };

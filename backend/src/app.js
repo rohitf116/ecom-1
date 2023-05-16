@@ -26,10 +26,12 @@ const Product = require("./routes/ProductRoutes");
 const User = require("./routes/UserRoutes");
 const Cart = require("./routes/CartRoutes");
 const Order = require("./routes/OrderRoutes");
+const Review = require("./routes/ReviewRoutes");
 app.use("/api/v1/product", Product);
 app.use("/api/v1/user", User);
 app.use("/api/v1/cart", Cart);
 app.use("/api/v1/order", Order);
+app.use("/api/v1/reviews", Review);
 app.get("/api/config/paypal", (req, res) =>
   res.send(process.env.PAYPAL_CLIENT_ID)
 );

@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Message from "../components/Message";
 
 import Loader from "../components/Loader";
-import { getOrderList } from "../actions/orderActions";
+import { getOrderList, deliverOrder } from "../actions/orderActions";
 import { useEffect } from "react";
 import { LinkContainer } from "react-router-bootstrap";
 
@@ -15,18 +15,27 @@ const OrderListScreen = () => {
   const { loading, error, orders } = orderList;
   console.log(orders, "orders");
   const userLogin = useSelector((state) => state.userLogin);
+  const orderDeliver = useSelector((state) => state.orderDeliver);
 
+  const {
+    loading: deliveredLoading,
+    error: deliveredError,
+    success,
+  } = orderDeliver;
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { userInfo } = userLogin;
-
+  const handleDeliver = (id) => {
+    console.log(id, "id");
+    dispach(deliverOrder(id));
+  };
   useEffect(() => {
     if (userInfo && userInfo.isAdmin) {
       dispach(getOrderList());
     } else {
       navigate("/");
     }
-  }, [navigate, dispach, userInfo]);
+  }, [navigate, dispach, userInfo, success]);
   const createProduct = () => {};
   const gotoUpdate = (product, id) => {
     console.log(product, id);
@@ -35,6 +44,7 @@ const OrderListScreen = () => {
   return (
     <>
       {error && <Message variant="danger">{error}</Message>}
+      {deliveredError && <Message variant="danger">{deliveredError}</Message>}
       {loading && <Loader />}
       <Row className="align-item-center">
         <Col>
@@ -57,9 +67,7 @@ const OrderListScreen = () => {
             <tr>
               <th>ID</th>
               <th>USER</th>
-
               <th>TOTAL_PRICE</th>
-
               <th>PAID</th>
               <th>DELIVERED</th>
               <th>DATE</th>
@@ -89,7 +97,7 @@ const OrderListScreen = () => {
                 </td>
                 <td> {order?.createdAt}</td>
                 <td>
-                  <Link to={`/${order._id}`}>Link </Link>
+                  <Link to={`/orders/${order._id}`}>Link </Link>
                 </td>
 
                 <td>
@@ -99,6 +107,15 @@ const OrderListScreen = () => {
                     onClick={() => gotoUpdate(order, order._id)}
                   >
                     <i className="fas fa-edit"></i>
+                  </Button>
+                </td>
+                <td>
+                  <Button
+                    variant="light"
+                    className="btn-sm"
+                    onClick={() => handleDeliver(order._id)}
+                  >
+                    Mark as delivered
                   </Button>
                 </td>
               </tr>

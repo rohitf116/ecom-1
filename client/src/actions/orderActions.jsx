@@ -16,6 +16,12 @@ import {
   ORDER_LIST_REQUEST,
   ORDER_LIST_SUCCESS,
   ORDER_LIST_FAIL,
+  ORDER_DELIVERED_REQUEST,
+  ORDER_DELIVERED_SUCCESS,
+  ORDER_DELIVERED_FAIL,
+  ORDER_DELIVER_REQUEST,
+  ORDER_DELIVER_SUCCESS,
+  ORDER_DELIVER_FAIL,
 } from "../constants/orderContants";
 import axios from "axios";
 import store from "../store"; // Import the store
@@ -205,6 +211,45 @@ export const getOrderList = () => async (dispatch) => {
         error?.message && error?.response?.data?.message
           ? error.response.data.message
           : error?.message,
+    });
+  }
+};
+
+export const deliverOrder = (id) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: ORDER_DELIVER_REQUEST,
+    });
+
+    const userInfo = store.getState().userLogin.userInfo;
+    // Check if userInfo exists and has a token property
+    const token = userInfo && userInfo.token ? userInfo.token : "";
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    const { data } = await axios.patch(
+      `http://localhost:3001/api/v1/order/admin/${id}`,
+      {},
+      config
+    );
+
+    dispatch({
+      type: ORDER_DELIVER_SUCCESS,
+      payload: data.data,
+    });
+  } catch (error) {
+    const message =
+      error.response && error.response.data.message
+        ? error.response.data.message
+        : error.message;
+
+    dispatch({
+      type: ORDER_DELIVER_FAIL,
+      payload: message,
     });
   }
 };

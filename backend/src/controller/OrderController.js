@@ -260,7 +260,7 @@ exports.markasDelivered = async (req, res) => {
         .status(404)
         .json({ status: false, message: "Order not found" });
     }
-    console.log(foundOrder);
+
     if (foundOrder.isDelevered) {
       return res
         .status(400)
