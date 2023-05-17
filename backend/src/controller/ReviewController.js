@@ -66,3 +66,40 @@ exports.createReview = async (req, res) => {
       .json({ status: false, message: "Server error", error: error.message });
   }
 };
+
+exports.getReview = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const foundReview = await ReviewModel.findOne({ _id: id });
+    if (!foundReview) {
+      return res
+        .status(404)
+        .json({ status: false, message: "review not found" });
+    }
+    res.status(200).json({
+      status: true,
+      message: "Successfully fetched review",
+      data: foundReview,
+    });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ status: false, message: "Server error", error: error.message });
+  }
+};
+exports.getReviewForProduct = async (req, res) => {
+  try {
+    const { product } = req.params;
+    console.log(req);
+    const foundReview = await ReviewModel.find({ product });
+    res.status(200).json({
+      status: true,
+      message: "Successfully fetched reviews",
+      data: foundReview,
+    });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ status: false, message: "Server error", error: error.message });
+  }
+};

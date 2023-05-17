@@ -14,26 +14,36 @@ import {
   PRODUCT_UPDATE_REQUEST,
   PRODUCT_UPDATE_SUCCESS,
   PRODUCT_UPDATE_FAIL,
+  PRODUCT_CREATE_REVIEW_REQUEST,
+  PRODUCT_CREATE_REVIEW_SUCCESS,
+  PRODUCT_CREATE_REVIEW_FAIL,
+  PRODUCT_LIST_REVIEW_REQUEST,
+  PRODUCT_LIST_REVIEW_SUCCESS,
+  PRODUCT_LIST_REVIEW_FAIL,
 } from "../constants/productContants";
 import store from "../store"; // Import the store
 import axios from "axios";
-export const listProducts = () => async (dispatch) => {
-  try {
-    dispatch({ type: PRODUCT_LIST_REQUEST });
-    const { data } = await axios.get("http://localhost:3001/api/v1/product");
-    console.log(data, "fafafafaf");
-    dispatch({ type: PRODUCT_LIST_SUCCESS, payload: data.data });
-  } catch (error) {
-    console.log(error);
-    dispatch({
-      type: PRODUCT_LIST_FAIL,
-      payload:
-        error.message && error.response.data.message
-          ? error.response.data.message
-          : error.message,
-    });
-  }
-};
+export const listProducts =
+  (keyword = "", page = "") =>
+  async (dispatch) => {
+    try {
+      dispatch({ type: PRODUCT_LIST_REQUEST });
+      const { data } = await axios.get(
+        `http://localhost:3001/api/v1/product?keyword=${keyword}&page=${page}`
+      );
+      console.log(data, "list");
+      dispatch({ type: PRODUCT_LIST_SUCCESS, payload: data });
+    } catch (error) {
+      console.log(error);
+      dispatch({
+        type: PRODUCT_LIST_FAIL,
+        payload:
+          error.message && error.response.data.message
+            ? error.response.data.message
+            : error.message,
+      });
+    }
+  };
 
 export const listProductDeatils = (id) => async (dispatch) => {
   try {
@@ -159,3 +169,71 @@ export const updateProduct =
       });
     }
   };
+
+export const createReview = (rating, comment, id) => async (dispatch) => {
+  try {
+    const userInfo = store.getState().userLogin.userInfo;
+
+    // Check if userInfo exists and has a token property
+    const token = userInfo && userInfo.token ? userInfo.token : "";
+
+    const config = {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${token}`, // Use the token for the Authorization header
+      },
+    };
+    dispatch({ type: PRODUCT_CREATE_REVIEW_REQUEST });
+    await axios.post(
+      // Add the 'await' keyword here
+      `http://localhost:3001/api/v1/reviews/${id}`,
+      { rating, comment },
+      config
+    );
+
+    dispatch({ type: PRODUCT_CREATE_REVIEW_SUCCESS });
+  } catch (error) {
+    console.log(error);
+    dispatch({
+      type: PRODUCT_CREATE_REVIEW_FAIL,
+      payload:
+        error?.message && error?.response?.data?.message
+          ? error.response.data.message
+          : error?.message,
+    });
+  }
+};
+
+export const getReviews = (id) => async (dispatch) => {
+  try {
+    const userInfo = store.getState().userLogin.userInfo;
+
+    // Check if userInfo exists and has a token property
+    const token = userInfo && userInfo.token ? userInfo.token : "";
+
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`, // Use the token for the Authorization header
+      },
+    };
+    dispatch({ type: PRODUCT_LIST_REVIEW_REQUEST });
+    const { data } = await axios.get(
+      // Add the 'await' keyword here
+      `http://localhost:3001/api/v1/reviews/product/${id}`,
+
+      config
+    );
+
+    dispatch({ type: PRODUCT_LIST_REVIEW_SUCCESS, payload: data.data });
+  } catch (error) {
+    console.log(error);
+    dispatch({
+      type: PRODUCT_LIST_REVIEW_FAIL,
+      payload:
+        error?.message && error?.response?.data?.message
+          ? error.response.data.message
+          : error?.message,
+    });
+  }
+};

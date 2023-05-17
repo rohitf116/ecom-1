@@ -86,12 +86,27 @@ exports.createProduct = async (req, res) => {
 
 exports.getAllProduct = async (req, res) => {
   try {
-    const foundData = await Product.find({ isDeleted: false });
+    const page = req.query.page * 1 || 1;
+    const limit = req.query.limit * 1 || 3;
+    const skip = (page - 1) * limit;
+    const keyword = req.query?.keyword
+      ? {
+          name: {
+            $regex: req.query?.keyword,
+            $options: "i",
+          },
+        }
+      : {};
+    const pages = await Product.countDocuments({ isDeleted: false });
+    const foundData = await Product.find({ isDeleted: false, ...keyword })
+      .skip(skip)
+      .limit(limit);
     res.status(200).json({
       status: true,
       message: "Succesfully fetched",
       numOfItems: foundData.length,
       data: foundData,
+      pages: Number(Math.ceil(pages / limit)),
     });
   } catch (error) {
     console.log(error);

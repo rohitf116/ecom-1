@@ -7,6 +7,8 @@ import {
   productDeleteReducer,
   productCreateReducer,
   productUpdateReducer,
+  productCreateReviewReducer,
+  productListReviewReducer,
 } from "./reducers/productReducers";
 import { cartReducer } from "./reducers/cartReducers";
 import {
@@ -52,6 +54,8 @@ const reducer = combineReducers({
   productUpdate: productUpdateReducer,
   orderList: orderListReducer,
   orderDeliver: orderDeliverReducer,
+  productCreateReview: productCreateReviewReducer,
+  productListReview: productListReviewReducer,
 });
 const cartFormLocalStorage = localStorage.getItem("cart")
   ? JSON.parse(localStorage.getItem("cart"))

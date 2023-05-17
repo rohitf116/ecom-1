@@ -8,7 +8,7 @@ exports.isAuth = async (req, res, next) => {
   try {
     const { LOGIN_HASH } = req.cookies;
     const token = req.headers.authorization;
-
+    console.log(req.headers);
     if (!token) {
       return res.status(401).json({ status: false, message: "Please login" });
     }
