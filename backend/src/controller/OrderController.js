@@ -267,6 +267,7 @@ exports.markasDelivered = async (req, res) => {
         .json({ status: false, message: "Already delivered" });
     }
     foundOrder.isDelevered = true;
+    foundOrder.deleveredAt = Date.now();
     await foundOrder.save();
     res.status(200).json({
       status: true,

@@ -1,5 +1,6 @@
 "use strict";
 const express = require("express");
+const path = require("path");
 const cors = require("cors");
 const dotevn = require("dotenv");
 const multer = require("multer");
@@ -35,5 +36,11 @@ app.use("/api/v1/reviews", Review);
 app.get("/api/config/paypal", (req, res) =>
   res.send(process.env.PAYPAL_CLIENT_ID)
 );
-
+const dirname = path.resolve();
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname, "../../client/build")));
+  app.get("*", (req, res) =>
+    res.sendFile(path.resolve(__dirname, "../../client/build", "index.html"))
+  );
+}
 app.listen(port, () => console.log(`Running on port: ${port}`));

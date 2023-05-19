@@ -45,7 +45,6 @@ exports.createUser = async (req, res) => {
     const otp = await generateAndHashOTP(simpleOtp);
 
     const foundEmail = await User.findOne({
-      isDeleted: false,
       "email.value": email,
     });
     if (foundEmail) {
@@ -563,13 +562,11 @@ exports.getUserByIdAdmin = async (req, res) => {
     if (!foundUser) {
       return res.status(404).json({ status: false, message: "User not found" });
     }
-    res
-      .status(200)
-      .json({
-        status: true,
-        message: "User is succesfully fetched by admin",
-        data: foundUser,
-      });
+    res.status(200).json({
+      status: true,
+      message: "User is succesfully fetched by admin",
+      data: foundUser,
+    });
   } catch (error) {
     console.log(error);
     res

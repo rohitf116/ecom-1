@@ -97,7 +97,10 @@ exports.getAllProduct = async (req, res) => {
           },
         }
       : {};
-    const pages = await Product.countDocuments({ isDeleted: false });
+    const pages = await Product.countDocuments({
+      isDeleted: false,
+      ...keyword,
+    });
     const foundData = await Product.find({ isDeleted: false, ...keyword })
       .skip(skip)
       .limit(limit);
@@ -200,19 +203,17 @@ exports.updateProduct = async (req, res) => {
         .json({ status: false, message: "countInStock must be a number" });
     }
     const file = req?.files[0] || null;
+    const url = null;
     // console.log(file, "file");
-    if (!file) {
-      return res
-        .status(400)
-        .json({ status: false, message: "Image is required" });
+    if (file) {
+      if (file.mimetype !== "image/png" && file.mimetype !== "image/jpeg") {
+        return res
+          .status(406)
+          .json({ status: false, message: "Only images are allowed" });
+      }
+      url = await uploadFile(file);
     }
-    if (file.mimetype !== "image/png" && file.mimetype !== "image/jpeg") {
-      return res
-        .status(406)
-        .json({ status: false, message: "Only images are allowed" });
-    }
-    const imageUrl = await uploadFile(file);
-    console.log(imageUrl, "imageUrl");
+
     foundProduct.name = name;
 
     foundProduct.description = description;
@@ -220,7 +221,7 @@ exports.updateProduct = async (req, res) => {
     foundProduct.price = price;
     foundProduct.countInStock = countInStock;
     foundProduct.brand = brand;
-    foundProduct.image = imageUrl;
+    foundProduct.image = url || foundProduct.image;
 
     await foundProduct.save();
     res.status(200).json({
@@ -256,6 +257,18 @@ exports.deleteProduct = async (req, res) => {
       status: true,
       message: "Productdetails successfully deleted",
     });
+  } catch (error) {
+    console.log(error);
+    res
+      .status(500)
+      .json({ status: false, message: "Server Error", error: error });
+  }
+};
+
+exports.getTopProducts = async (req, res) => {
+  try {
+    const foundProducts = await Product.find({}).sort({ rating: -1 }).limit(3);
+    res.status(200).json({ status: true, data: foundProducts });
   } catch (error) {
     console.log(error);
     res
