@@ -20,6 +20,9 @@ import {
   PRODUCT_LIST_REVIEW_REQUEST,
   PRODUCT_LIST_REVIEW_SUCCESS,
   PRODUCT_LIST_REVIEW_FAIL,
+  PRODUCT_TOP_REQUEST,
+  PRODUCT_TOP_SUCCESS,
+  PRODUCT_TOP_FAIL,
 } from "../constants/productContants";
 import store from "../store"; // Import the store
 import axios from "axios";
@@ -31,7 +34,7 @@ export const listProducts =
       const { data } = await axios.get(
         `http://localhost:3001/api/v1/product?keyword=${keyword}&page=${page}`
       );
-      console.log(data, "list");
+      console.log(data, "mist");
       dispatch({ type: PRODUCT_LIST_SUCCESS, payload: data });
     } catch (error) {
       console.log(error);
@@ -44,6 +47,25 @@ export const listProducts =
       });
     }
   };
+
+export const topProducts = () => async (dispatch) => {
+  try {
+    dispatch({ type: PRODUCT_TOP_REQUEST });
+    const { data } = await axios.get(
+      `http://localhost:3001/api/v1/product/top`
+    );
+    dispatch({ type: PRODUCT_TOP_SUCCESS, payload: data.data });
+  } catch (error) {
+    console.log(error);
+    dispatch({
+      type: PRODUCT_TOP_FAIL,
+      payload:
+        error.message && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
+};
 
 export const listProductDeatils = (id) => async (dispatch) => {
   try {

@@ -6,7 +6,6 @@ const Main = () => {
     <div>
       <main className="py-3">
         <Container className="text-center">
-          <h1>Welcome to Ecom</h1>
           <HomeScreen />
         </Container>
       </main>

@@ -5,6 +5,7 @@ import { Outlet, Link } from "react-router-dom";
 import { logout } from "../actions/userActions";
 import { clearCart } from "../actions/cartActions";
 import SearchboxContainer from "./SearchboxContainer";
+import { LinkContainer } from "react-router-bootstrap";
 
 const Header = () => {
   const userLogin = useSelector((state) => state.userLogin);
@@ -14,6 +15,7 @@ const Header = () => {
   // Get the updated user name from the userDetail state
   const userDetail = useSelector((state) => state.userDetail);
   const { user } = userDetail;
+  console.log(user, "user");
 
   const logOutHandler = () => {
     dispatch(logout());
@@ -35,9 +37,9 @@ const Header = () => {
             <Navbar.Collapse id="basic-navbar-nav">
               <SearchboxContainer />
               <Nav className="ml-auto">
-                <Link to="/cart">
+                <Nav.Link as={Link} to="/cart">
                   <i className="fas fa-shopping-cart"></i> Cart
-                </Link>
+                </Nav.Link>
                 {userInfo ? (
                   <NavDropdown title={userName}>
                     <NavDropdown.Item as={Link} to="/profile">

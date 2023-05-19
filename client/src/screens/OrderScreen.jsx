@@ -93,9 +93,10 @@ const PaymentScreen = () => {
               {order?.metadata?.street},{order?.metadata?.city},
               {order?.metadata?.postalCode},{order?.metadata?.country}
             </p>
+            {console.log("HIIIII", order.isDelivered)}
             {order?.isDelivered ? (
               <Message variant="success">
-                Dilivered at {order?.isDelivered}
+                Dilivered at {order?.deleveredAt}
               </Message>
             ) : (
               <Message variant="danger">Not Delivered</Message>

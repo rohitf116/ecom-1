@@ -1,12 +1,14 @@
 import { useEffect } from "react";
 import { Col, Row } from "react-bootstrap";
+
 import { useDispatch, useSelector } from "react-redux";
 import Product from "../components/Product";
-import { listProducts } from "../actions/productActions";
+import { listProducts, topProducts } from "../actions/productActions";
 import Message from "../components/Message";
 import Loader from "../components/Loader";
 import { useHistory, useParams } from "react-router-dom";
 import Paginate from "../components/Paginate";
+import ProductCarousal from "../components/ProductCarousal";
 const HomeScreen = () => {
   const { keyword } = useParams();
   const { page = 1 } = useParams();
@@ -23,6 +25,7 @@ const HomeScreen = () => {
   // const products = [];
   return (
     <div>
+      {!keyword && <ProductCarousal />}
       <h1>Latest products</h1>
       {loading ? (
         <Loader />
@@ -37,7 +40,6 @@ const HomeScreen = () => {
               </Col>
             ))}
           </Row>
-          {console.log(products.length)}
           <Paginate
             keyword={keyword ? keyword : ""}
             page={page}

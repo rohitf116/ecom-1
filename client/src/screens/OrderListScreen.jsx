@@ -89,7 +89,7 @@ const OrderListScreen = () => {
                   )}
                 </td>
                 <td>
-                  {order.isDelevered ? (
+                  {order.deleveredAt ? (
                     <i className="fas fa-check" style={{ color: "green" }}></i>
                   ) : (
                     <i className="fas fa-times" style={{ color: "red" }}></i>

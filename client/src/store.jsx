@@ -9,6 +9,7 @@ import {
   productUpdateReducer,
   productCreateReviewReducer,
   productListReviewReducer,
+  productTopRatedReducer,
 } from "./reducers/productReducers";
 import { cartReducer } from "./reducers/cartReducers";
 import {
@@ -56,6 +57,7 @@ const reducer = combineReducers({
   orderDeliver: orderDeliverReducer,
   productCreateReview: productCreateReviewReducer,
   productListReview: productListReviewReducer,
+  productTopRated: productTopRatedReducer,
 });
 const cartFormLocalStorage = localStorage.getItem("cart")
   ? JSON.parse(localStorage.getItem("cart"))

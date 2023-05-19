@@ -20,7 +20,7 @@ import {
   updateUserDeails,
   updateUserPassword,
 } from "../actions/userActions";
-import {getMyOrder} from "../actions/orderActions"
+import { getMyOrder } from "../actions/orderActions";
 
 // Import Font Awesome components and icons
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -38,7 +38,7 @@ const ProfileScreen = () => {
 
   const orderListMy = useSelector((state) => state.orderListMy);
 
-  const { loading:loadingOrder, error:errorOrder, orders } = orderListMy;
+  const { loading: loadingOrder, error: errorOrder, orders } = orderListMy;
 
   console.log(orders, "orders");
 
@@ -55,7 +55,7 @@ const ProfileScreen = () => {
       navigate("/login");
     }
     dispatch(getUserDeails());
-    dispatch(getMyOrder())
+    dispatch(getMyOrder());
   }, [navigate, userInfo, error, dispatch]);
 
   const submitHandler = (e) => {
@@ -154,53 +154,59 @@ const ProfileScreen = () => {
           </Card>
         </Col>
         <Col md={9}>
-  <h2>My Orders</h2>
-  {loadingOrder ? (
-    <Loader />
-  ) : errorOrder ? (
-    <Message variant='danger'>{errorOrder}</Message>
-  ) : (
-    <Table striped bordered hover responsive className='table-sm'>
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>DATE</th>
-          <th>TOTAL</th>
-          <th>PAID</th>
-          <th>DELIVERED</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        {orders?.map((order) => (
-          <tr key={order._id}>
-            <td>{order._id}</td>
-            <td>{order.createdAt.substring(0, 10)}</td>
-            <td>${order.totalPrice.toFixed(2)}</td>
-            <td>
-              {order.isPaid ? (
-                order.paidAt.substring(0, 10)
-              ) : (
-                <i className='fas fa-times' style={{ color: 'red' }}></i>
-              )}
-            </td>
-            <td>
-              {order.isDelivered ? (
-                order.deliveredAt.substring(0, 10)
-              ) : (
-                <i className='fas fa-times' style={{ color: 'red' }}></i>
-              )}
-            </td>
-            <td>
-              <Link to={`/order/${order._id}`}>Details</Link>
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </Table>
-  )}
-</Col>
-
+          <h2>My Orders</h2>
+          {loadingOrder ? (
+            <Loader />
+          ) : errorOrder ? (
+            <Message variant="danger">{errorOrder}</Message>
+          ) : (
+            <Table striped bordered hover responsive className="table-sm">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>DATE</th>
+                  <th>TOTAL</th>
+                  <th>PAID</th>
+                  <th>DELIVERED</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                {orders?.map((order) => (
+                  <tr key={order._id}>
+                    <td>{order._id}</td>
+                    <td>{order.createdAt.substring(0, 10)}</td>
+                    <td>${order.totalPrice.toFixed(2)}</td>
+                    <td>
+                      {order.isPaid ? (
+                        order.paidAt.substring(0, 10)
+                      ) : (
+                        <i
+                          className="fas fa-times"
+                          style={{ color: "red" }}
+                        ></i>
+                      )}
+                    </td>
+                    {console.log(order.isDelevered, "--------------")}
+                    <td>
+                      {order.isDelevered ? (
+                        order?.deleveredAt?.substring(0, 10)
+                      ) : (
+                        <i
+                          className="fas fa-times"
+                          style={{ color: "red" }}
+                        ></i>
+                      )}
+                    </td>
+                    <td>
+                      <Link to={`/order/${order._id}`}>Details</Link>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          )}
+        </Col>
       </Row>
       <Modal
         show={isPasswordEditable}
