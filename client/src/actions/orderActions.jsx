@@ -25,6 +25,7 @@ import {
 } from "../constants/orderContants";
 import axios from "axios";
 import store from "../store"; // Import the store
+import { BASE_URL } from "../config";
 export const savePaymentAddress = (address) => (dispatch) => {
   console.log(address, "adrress");
   dispatch({
@@ -60,7 +61,7 @@ export const createOrder =
 
       const { data } = await axios.post(
         // Add the 'await' keyword here
-        "http://localhost:3001/api/v1/order",
+        `${BASE_URL}/api/v1/order`,
         { _id, paymentMethod, taxPrice, shippingPrice, shippingAddress },
         config
       );
@@ -95,7 +96,7 @@ export const getOrder = (id) => async (dispatch) => {
 
     const { data } = await axios.get(
       // Add the 'await' keyword here
-      `http://localhost:3001/api/v1/order/${id}`,
+      `${BASE_URL}/api/v1/order/${id}`,
       config
     );
     console.log(data, "data");
@@ -129,7 +130,7 @@ export const payOrder = (orderId, paymentResult) => async (dispatch) => {
 
     const { data } = await axios.put(
       // Add the 'await' keyword here
-      `http://localhost:3001/api/v1/order/${orderId}/pay`,
+      `${BASE_URL}/api/v1/order/${orderId}/pay`,
       paymentResult,
       config
     );
@@ -164,7 +165,7 @@ export const getMyOrder = () => async (dispatch) => {
 
     const { data } = await axios.get(
       // Add the 'await' keyword here
-      `http://localhost:3001/api/v1/order`,
+      `${BASE_URL}/api/v1/order`,
       config
     );
     console.log(data, "data");
@@ -198,7 +199,7 @@ export const getOrderList = () => async (dispatch) => {
 
     const { data } = await axios.get(
       // Add the 'await' keyword here
-      `http://localhost:3001/api/v1/order/admin`,
+      `${BASE_URL}/api/v1/order/admin`,
       config
     );
     console.log(data, "data");
@@ -232,7 +233,7 @@ export const deliverOrder = (id) => async (dispatch, getState) => {
     };
 
     const { data } = await axios.patch(
-      `http://localhost:3001/api/v1/order/admin/${id}`,
+      `${BASE_URL}/api/v1/order/admin/${id}`,
       {},
       config
     );

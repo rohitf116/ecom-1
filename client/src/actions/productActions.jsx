@@ -24,15 +24,19 @@ import {
   PRODUCT_TOP_SUCCESS,
   PRODUCT_TOP_FAIL,
 } from "../constants/productContants";
+import { BASE_URL } from "../config";
 import store from "../store"; // Import the store
 import axios from "axios";
+console.log(BASE_URL, "base");
+const myUrl = `${BASE_URL}/api/v1/product`;
+console.log(myUrl, "myUrl");
 export const listProducts =
   (keyword = "", page = "") =>
   async (dispatch) => {
     try {
       dispatch({ type: PRODUCT_LIST_REQUEST });
       const { data } = await axios.get(
-        `https://ecomm-wkfj.onrender.com/api/v1/product?keyword=${keyword}&page=${page}`
+        `${BASE_URL}/api/v1/product?keyword=${keyword}&page=${page}`
       );
       console.log(data, "mist");
       dispatch({ type: PRODUCT_LIST_SUCCESS, payload: data });
@@ -51,9 +55,7 @@ export const listProducts =
 export const topProducts = () => async (dispatch) => {
   try {
     dispatch({ type: PRODUCT_TOP_REQUEST });
-    const { data } = await axios.get(
-      `http://localhost:3001/api/v1/product/top`
-    );
+    const { data } = await axios.get(`${BASE_URL}/api/v1/product/top`);
     dispatch({ type: PRODUCT_TOP_SUCCESS, payload: data.data });
   } catch (error) {
     console.log(error);
@@ -71,9 +73,7 @@ export const listProductDeatils = (id) => async (dispatch) => {
   try {
     dispatch({ type: PRODUCT_DETAIL_REQUEST });
     console.log(id);
-    const { data } = await axios.get(
-      `http://localhost:3001/api/v1/product/${id}`
-    );
+    const { data } = await axios.get(`${BASE_URL}/api/v1/product/${id}`);
     console.log(data);
     dispatch({ type: PRODUCT_DETAIL_SUCCESS, payload: data.data });
   } catch (error) {
@@ -104,7 +104,7 @@ export const deleteProduct = (id) => async (dispatch) => {
     dispatch({ type: PRODUCT_DELETE_REQUEST });
     const { data } = await axios.delete(
       // Add the 'await' keyword here
-      `http://localhost:3001/api/v1/product/admin/${id}`,
+      `${BASE_URL}/api/v1/product/admin/${id}`,
       config
     );
     dispatch({ type: PRODUCT_DELETE_SUCCESS, payload: data.data });
@@ -138,7 +138,7 @@ export const productCreate =
       dispatch({ type: PRODUCT_CREATE_REQUEST });
       const { data } = await axios.post(
         // Add the 'await' keyword here
-        `http://localhost:3001/api/v1/product`,
+        `${BASE_URL}/api/v1/product`,
         { name, description, brand, category, price, countInStock, file },
         config
       );
@@ -174,7 +174,7 @@ export const updateProduct =
       dispatch({ type: PRODUCT_UPDATE_REQUEST });
       const { data } = await axios.put(
         // Add the 'await' keyword here
-        `http://localhost:3001/api/v1/product/${id}`,
+        `${BASE_URL}/api/v1/product/${id}`,
         { name, description, brand, category, price, countInStock, file },
         config
       );
@@ -208,7 +208,7 @@ export const createReview = (rating, comment, id) => async (dispatch) => {
     dispatch({ type: PRODUCT_CREATE_REVIEW_REQUEST });
     await axios.post(
       // Add the 'await' keyword here
-      `http://localhost:3001/api/v1/reviews/${id}`,
+      `${BASE_URL}/api/v1/reviews/${id}`,
       { rating, comment },
       config
     );
@@ -242,7 +242,7 @@ export const getReviews = (id) => async (dispatch) => {
     dispatch({ type: PRODUCT_LIST_REVIEW_REQUEST });
     const { data } = await axios.get(
       // Add the 'await' keyword here
-      `http://localhost:3001/api/v1/reviews/product/${id}`,
+      `${BASE_URL}/api/v1/reviews/product/${id}`,
 
       config
     );

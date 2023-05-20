@@ -10,6 +10,7 @@ import {
 } from "../constants/cartContants";
 
 import store from "../store"; // Import the store
+import { BASE_URL } from "../config";
 export const addToCart = (id, qty) => async (dispatch, getState) => {
   try {
     // Access userInfo from the store's state
@@ -25,7 +26,7 @@ export const addToCart = (id, qty) => async (dispatch, getState) => {
       },
     };
     const { data } = await axios.post(
-      "http://localhost:3001/api/v1/cart",
+      `${BASE_URL}/api/v1/cart`,
       {
         id,
         qty,
@@ -62,7 +63,7 @@ export const removeFromCart = (id, qty) => async (dispatch, getState) => {
     },
   };
   const { data } = await axios.put(
-    "http://localhost:3001/api/v1/cart",
+    `${BASE_URL}/api/v1/cart`,
     {
       id,
       qty,
@@ -95,10 +96,7 @@ export const fetchCart = () => async (dispatch, getState) => {
       },
     };
 
-    const { data } = await axios.get(
-      "http://localhost:3001/api/v1/cart",
-      config
-    );
+    const { data } = await axios.get(`${BASE_URL}/api/v1/cart`, config);
     dispatch({
       type: CART_FETCH_SUCCESS,
       payload: data.data,

@@ -30,6 +30,7 @@ import {
   USER_DELETE_SUCCESS,
   USER_DELETE_REQUEST,
 } from "../constants/userContants";
+import { BASE_URL } from "../config";
 
 console.log(USER_LOGIN_REQUEST, "USER_LOGIN_REQUEST");
 export const login = (email, password) => async (dispatch) => {
@@ -43,7 +44,7 @@ export const login = (email, password) => async (dispatch) => {
     };
     const { data } = await axios.post(
       // Add the 'await' keyword here
-      "http://localhost:3001/api/v1/user/login",
+      `${BASE_URL}/api/v1/user/login`,
       { email, password },
       config
     );
@@ -82,7 +83,7 @@ export const register =
       };
       const { data } = await axios.post(
         // Add the 'await' keyword here
-        "http://localhost:3001/api/v1/user",
+        `${BASE_URL}/api/v1/user`,
         { name, email, password },
         config
       );
@@ -117,7 +118,7 @@ export const getUserDeails = () => async (dispatch) => {
 
     const { data } = await axios.get(
       // Add the 'await' keyword here
-      "http://localhost:3001/api/v1/user",
+      `${BASE_URL}/api/v1/user`,
 
       config
     );
@@ -151,7 +152,7 @@ export const updateUserDeails = (name) => async (dispatch) => {
     dispatch({ type: USER_DETAIL_REQUEST });
 
     const { data } = await axios.patch(
-      "http://localhost:3001/api/v1/user",
+      `${BASE_URL}/api/v1/user`,
       { name },
       config
     );
@@ -178,7 +179,7 @@ export const verifyOtp = (email, otp) => async (dispatch) => {
       },
     };
     const { data } = await axios.post(
-      "http://localhost:3001/api/v1/user/verify",
+      `${BASE_URL}/api/v1/user/verify`,
       { email, otp },
       config
     );
@@ -227,7 +228,7 @@ export const getUserAddress = () => async (dispatch) => {
 
     const { data } = await axios.get(
       // Add the 'await' keyword here
-      "http://localhost:3001/api/v1/user/address",
+      `${BASE_URL}/api/v1/user/address`,
 
       config
     );
@@ -265,7 +266,7 @@ export const addUserAddress =
       console.log(street, city, postalCode, country);
       const { data } = await axios.post(
         // Add the 'await' keyword here
-        "http://localhost:3001/api/v1/user/address",
+        `${BASE_URL}/api/v1/user/address`,
         { street, city, postalCode, country },
 
         config
@@ -301,7 +302,7 @@ export const getUsers = () => async (dispatch) => {
     dispatch({ type: USER_LIST_REQUEST });
     const { data } = await axios.get(
       // Add the 'await' keyword here
-      "http://localhost:3001/api/v1/user/all",
+      `${BASE_URL}/api/v1/user/all`,
       config
     );
     dispatch({ type: USER_LIST_SUCCESS, payload: data.data });
@@ -334,7 +335,7 @@ export const deleteUsers = (id) => async (dispatch) => {
     dispatch({ type: USER_DELETE_REQUEST });
     const { data } = await axios.delete(
       // Add the 'await' keyword here
-      `http://localhost:3001/api/v1/user/admin/${id}`,
+      `${BASE_URL}/api/v1/user/admin/${id}`,
       config
     );
     dispatch({ type: USER_DELETE_SUCCESS, payload: data.data });

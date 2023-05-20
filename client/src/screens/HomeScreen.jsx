@@ -19,6 +19,7 @@ const HomeScreen = () => {
   const { loading, error, products } = productList;
   const pages = products?.pages || 0;
   console.log(productList, "productList");
+
   useEffect(() => {
     dispatch(listProducts(keyword, page));
   }, [dispatch, keyword, page]);
