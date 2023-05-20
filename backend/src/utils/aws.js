@@ -8,7 +8,7 @@ aws.config.update({
   secretAccessKey: process.env.SECRET_KEYS,
   region: "ap-south-1",
 });
-
+//aa
 exports.uploadFile = async (file) => {
   return new Promise(function (resolve, reject) {
     // this function will upload file to aws and return the link
