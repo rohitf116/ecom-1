@@ -29,6 +29,7 @@ import {
   PRODUCT_TOP_RESET,
   PRODUCT_TOP_REQUEST,
 } from "../constants/productContants";
+//h
 export const productListReducer = (state = { products: [] }, action) => {
   switch (action.type) {
     case PRODUCT_LIST_REQUEST:
