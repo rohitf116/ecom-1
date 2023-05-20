@@ -18,6 +18,7 @@ import FormContainer from "../components/FormContainer";
 import Message from "../components/Message";
 import { ORDER_PAY_RESET } from "../constants/orderContants";
 import { CLEAR_CART } from "../constants/cartContants";
+import { BASE_URL } from "../config";
 const PaymentScreen = () => {
   const [sdkReady, setSdkReady] = useState(false);
 
@@ -84,7 +85,7 @@ const PaymentScreen = () => {
   useEffect(() => {
     const addPayPalScript = async () => {
       const { data: clientId } = await axios.get(
-        "http://localhost:3001/api/config/paypal"
+        `${BASE_URL}/api/config/paypal`
       );
       const script = document.createElement("script");
       script.type = "text/javascript";
