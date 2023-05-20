@@ -17,7 +17,7 @@ app.use(cookieParser());
 if (process.env.NODE_ENV == "development") {
   app.use(morgan("dev"));
 }
-
+//j
 mongoose
   .connect(process.env.MONGO_STRING)
   .then(() => console.log("MongoDb is connected"))
