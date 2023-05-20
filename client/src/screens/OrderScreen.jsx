@@ -187,7 +187,6 @@
 // };
 
 // export default PaymentScreen;
-
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate, useParams, Link } from "react-router-dom";
@@ -204,10 +203,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { PayPalButton } from "react-paypal-button-v2";
 import { getOrder, payOrder } from "../actions/orderActions";
 import Loader from "../components/Loader";
-import FormContainer from "../components/FormContainer";
 import Message from "../components/Message";
-import { ORDER_PAY_RESET } from "../constants/orderContants";
-import { CLEAR_CART } from "../constants/cartContants";
+import {
+  ORDER_PAY_REQUEST,
+  ORDER_PAY_SUCCESS,
+  ORDER_PAY_FAIL,
+  ORDER_PAY_RESET,
+} from "../constants/orderContants";
 import { BASE_URL } from "../config";
 
 const PaymentScreen = () => {
@@ -216,18 +218,16 @@ const PaymentScreen = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { id } = useParams();
+
   const orderDetails = useSelector((state) => state.orderDetails);
   const { loading, error, order } = orderDetails;
+
   const orderPay = useSelector((state) => state.orderPay);
   const { loading: loadingPay, success: successPay } = orderPay;
 
   const successPaymentHandler = (paymentResult) => {
     dispatch(payOrder(id, paymentResult));
   };
-
-  useEffect(() => {
-    dispatch(getOrder(id));
-  }, [dispatch, id]);
 
   useEffect(() => {
     const addPayPalScript = async () => {
@@ -254,17 +254,11 @@ const PaymentScreen = () => {
         setSdkReady(true);
       }
     }
-
-    // Cleanup function
-    return () => {
-      const paypalScript = document.querySelector(
-        'script[src^="https://www.paypal.com/sdk/js"]'
-      );
-      if (paypalScript) {
-        paypalScript.remove();
-      }
-    };
   }, [dispatch, id, order, successPay]);
+
+  const handlePaymentCancel = () => {
+    navigate("/"); // Redirect to homepage or any other page you want
+  };
 
   return (
     <>
@@ -276,57 +270,64 @@ const PaymentScreen = () => {
       ) : (
         <Row>
           <Col md={8}>
-            <ListGroup.Item variant="flush">
-              <h2>Shipping</h2>
-              <p>
-                <strong>Address:</strong>
-                {order?.metadata?.street}, {order?.metadata?.city},{" "}
-                {order?.metadata?.postalCode}, {order?.metadata?.country}
-              </p>
-              {order?.isDelivered ? (
-                <Message variant="success">
-                  Delivered at {order?.deliveredAt}
-                </Message>
-              ) : (
-                <Message variant="danger">Not Delivered</Message>
-              )}
-            </ListGroup.Item>
-            <ListGroup.Item>
-              <h2>Payment Method</h2>
-              <strong>Method:</strong> {order?.paymentMethod}
-              {order?.isPaid ? (
-                <Message variant="success">Paid on {order?.paidAt}</Message>
-              ) : (
-                <Message variant="danger">Not paid</Message>
-              )}
-            </ListGroup.Item>
-            <ListGroup.Item>
-              <h2>Order Items</h2>
-              {order?.items.length === 0 ? (
-                <Message>You have no items to buy </Message>
-              ) : (
-                <ListGroup variant="flush">
-                  {order?.items.map((item, index) => (
-                    <ListGroup.Item key={item.productId}>
-                      <Row>
-                        <Col md={1}>
-                          <Image src={item.image} fluid rounded />
-                        </Col>
-                        <Col>
-                          <Link to={`/product/${item?.productId}`}>
-                            {item?.name}
-                          </Link>
-                        </Col>
-                        <Col md={4}>
-                          {item?.quantity} x ${item.price} ={" "}
-                          {item?.quantity * item.price}
-                        </Col>
-                      </Row>
-                    </ListGroup.Item>
-                  ))}
-                </ListGroup>
-              )}
-            </ListGroup.Item>
+            <ListGroup variant="flush">
+              <ListGroup.Item>
+                <h2>Shipping</h2>
+                <p>
+                  <strong>Address:</strong> {order?.metadata?.street},{" "}
+                  {order?.metadata?.city}, {order?.metadata?.postalCode},{" "}
+                  {order?.metadata?.country}
+                </p>
+                {order?.isDelivered ? (
+                  <Message variant="success">
+                    Delivered at {order?.deliveredAt}
+                  </Message>
+                ) : (
+                  <Message variant="danger">Not Delivered</Message>
+                )}
+              </ListGroup.Item>
+              <ListGroup.Item>
+                <h2>Payment Method</h2>
+                <strong>Method:</strong> {order?.paymentMethod}
+                {order?.isPaid ? (
+                  <Message variant="success">Paid on {order?.paidAt}</Message>
+                ) : (
+                  <Message variant="danger">Not paid</Message>
+                )}
+              </ListGroup.Item>
+              <ListGroup.Item>
+                <h2>Order Items</h2>
+                {order?.orderItems.length === 0 ? (
+                  <Message>Your order is empty</Message>
+                ) : (
+                  <ListGroup variant="flush">
+                    {order?.orderItems.map((item, index) => (
+                      <ListGroup.Item key={index}>
+                        <Row>
+                          <Col md={1}>
+                            <Image
+                              src={item.image}
+                              alt={item.name}
+                              fluid
+                              rounded
+                            />
+                          </Col>
+                          <Col>
+                            <Link to={`/product/${item.product}`}>
+                              {item.name}
+                            </Link>
+                          </Col>
+                          <Col md={4}>
+                            {item.quantity} x ${item.price} = $
+                            {(item.quantity * item.price).toFixed(2)}
+                          </Col>
+                        </Row>
+                      </ListGroup.Item>
+                    ))}
+                  </ListGroup>
+                )}
+              </ListGroup.Item>
+            </ListGroup>
           </Col>
           <Col md={4}>
             <Card>
@@ -337,19 +338,25 @@ const PaymentScreen = () => {
                 <ListGroup.Item>
                   <Row>
                     <Col>Items</Col>
-                    <Col>${order?.totalPrice}</Col>
+                    <Col>${order?.itemsPrice?.toFixed(2)}</Col>
                   </Row>
                 </ListGroup.Item>
                 <ListGroup.Item>
                   <Row>
                     <Col>Shipping</Col>
-                    <Col>${order?.shippingPrice || 0}</Col>
+                    <Col>${order?.shippingPrice?.toFixed(2)}</Col>
                   </Row>
                 </ListGroup.Item>
                 <ListGroup.Item>
                   <Row>
                     <Col>Tax</Col>
-                    <Col>${order?.taxPrice || 0}</Col>
+                    <Col>${order?.taxPrice?.toFixed(2)}</Col>
+                  </Row>
+                </ListGroup.Item>
+                <ListGroup.Item>
+                  <Row>
+                    <Col>Total</Col>
+                    <Col>${order?.totalPrice?.toFixed(2)}</Col>
                   </Row>
                 </ListGroup.Item>
                 {!order?.isPaid && (
@@ -358,13 +365,14 @@ const PaymentScreen = () => {
                       <Loader />
                     ) : (
                       <>
-                        {!sdkReady ? (
-                          <Loader />
-                        ) : (
+                        {sdkReady ? (
                           <PayPalButton
-                            amount={Number(order?.totalPrice.toFixed(2))}
+                            amount={Number(order?.totalPrice?.toFixed(2))}
                             onSuccess={successPaymentHandler}
+                            onCancel={handlePaymentCancel}
                           />
+                        ) : (
+                          <Loader />
                         )}
                       </>
                     )}
