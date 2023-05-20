@@ -32,7 +32,7 @@ export const listProducts =
     try {
       dispatch({ type: PRODUCT_LIST_REQUEST });
       const { data } = await axios.get(
-        `http://localhost:3001/api/v1/product?keyword=${keyword}&page=${page}`
+        `https://ecomm-wkfj.onrender.com/api/v1/product?keyword=${keyword}&page=${page}`
       );
       console.log(data, "mist");
       dispatch({ type: PRODUCT_LIST_SUCCESS, payload: data });
