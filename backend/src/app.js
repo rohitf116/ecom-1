@@ -37,12 +37,11 @@ app.get("/api/config/paypal", (req, res) =>
   res.send(process.env.PAYPAL_CLIENT_ID)
 );
 const dirname = path.resolve();
-const buildPath = path.join(dirname, "src", "build");
-
 if (process.env.NODE_ENV === "production") {
-  app.use(express.static(buildPath));
+  app.use(express.static(path.join(dirname, "build")));
   app.get("*", (req, res) =>
-    res.sendFile(path.join(buildPath, "index.html"))
+    res.sendFile(path.join(dirname, "build", "index.html"))
   );
 }
+
 app.listen(port, () => console.log(`Running on port: ${port}`));
