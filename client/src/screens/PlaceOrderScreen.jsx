@@ -15,11 +15,13 @@ import { savePaymentAddress } from "../actions/orderActions";
 import { createOrder } from "../actions/orderActions";
 import CheckoutSteps from "../components/CheckoutSteps";
 import Message from "../components/Message";
+import { CLEAR_CART } from "../constants/cartContants";
 
 const PlaceOrderScreen = () => {
   const cart = useSelector((state) =>
     state?.cart?.cart ? state?.cart?.cart : state?.cart
   );
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   cart.shippingPrice = cart.totalPrice > 500 ? 0 : 100;
   cart.taxPrice = Number((0.18 * cart.totalPrice).toFixed(2));
@@ -31,6 +33,17 @@ const PlaceOrderScreen = () => {
   const paymentMethod = useSelector(
     (state) => state?.paymentMethod?.paymentMethod
   );
+
+  const orderCreate = useSelector((state) => state.orderCreate);
+  const { loading, error, order } = orderCreate;
+  console.log(order, "order");
+  useEffect(() => {
+    if (order) {
+      dispatch({ type: CLEAR_CART });
+      navigate(`/order/${order._id}`); // Redirect to the specific order page
+    }
+  }, [navigate, order]);
+
   const placeOrderHandler = () => {
     dispatch(
       createOrder(

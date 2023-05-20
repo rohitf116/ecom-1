@@ -17,6 +17,7 @@ import Loader from "../components/Loader";
 import FormContainer from "../components/FormContainer";
 import Message from "../components/Message";
 import { ORDER_PAY_RESET } from "../constants/orderContants";
+import { CLEAR_CART } from "../constants/cartContants";
 const PaymentScreen = () => {
   const [sdkReady, setSdkReady] = useState(false);
 
@@ -35,15 +36,53 @@ const PaymentScreen = () => {
   console.log("sdkReady:", sdkReady);
   console.log("loading:", loading);
   console.log("loadingPay:", loadingPay);
+  // useEffect(() => {
+  //   dispatch(getOrder(id));
+  // }, [id]);
+  // useEffect(() => {
+  //   console.log("Order object: ", order);
+  //   console.log("successPay: ", successPay);
+
+  //   const addPayPalScript = async () => {
+  //     console.log(addPayPalScript, "addPayPalScript is fired");
+  //     const { data: clientId } = await axios.get(
+  //       "http://localhost:3001/api/config/paypal"
+  //     );
+  //     const script = document.createElement("script");
+  //     script.type = "text/javascript";
+  //     script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}`;
+  //     script.async = true;
+  //     script.onload = () => {
+  //       console.log("script loaded");
+  //       setSdkReady(true);
+  //     };
+  //     document.body.appendChild(script);
+  //   };
+  //   console.log(order, "order");
+  //   console.log(order?.isPaid, "!order?.isPaid");
+  //   console.log(!window.paypal, "!window.paypal");
+
+  //   if (!order || successPay) {
+  //     console.log("!order || successPay");
+  //     dispatch({ type: ORDER_PAY_RESET });
+  //     dispatch(getOrder(id));
+  //   } else if (!order?.isPaid) {
+  //     if (!window.paypal) {
+  //       console.log("!window.paypal");
+  //       addPayPalScript();
+  //     } else {
+  //       console.log("setSdkReady(true);");
+  //       setSdkReady(true);
+  //       console.log("setSdkReady(result);", sdkReady);
+  //     }
+  //   }
+  // }, [id, successPay, sdkReady, order]);
   useEffect(() => {
     dispatch(getOrder(id));
   }, [id]);
-  useEffect(() => {
-    console.log("Order object: ", order);
-    console.log("successPay: ", successPay);
 
+  useEffect(() => {
     const addPayPalScript = async () => {
-      console.log(addPayPalScript, "addPayPalScript is fired");
       const { data: clientId } = await axios.get(
         "http://localhost:3001/api/config/paypal"
       );
@@ -52,30 +91,32 @@ const PaymentScreen = () => {
       script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}`;
       script.async = true;
       script.onload = () => {
-        console.log("script loaded");
         setSdkReady(true);
       };
       document.body.appendChild(script);
     };
-    console.log(order, "order");
-    console.log(order?.isPaid, "!order?.isPaid");
-    console.log(!window.paypal, "!window.paypal");
 
     if (!order || successPay) {
-      console.log("!order || successPay");
       dispatch({ type: ORDER_PAY_RESET });
       dispatch(getOrder(id));
-    } else if (!order?.isPaid) {
+    } else if (!order.isPaid) {
       if (!window.paypal) {
-        console.log("!window.paypal");
         addPayPalScript();
       } else {
-        console.log("setSdkReady(true);");
         setSdkReady(true);
-        console.log("setSdkReady(result);", sdkReady);
       }
     }
-  }, [id, successPay, sdkReady, order]);
+
+    // Cleanup function
+    return () => {
+      const paypalScript = document.querySelector(
+        'script[src^="https://www.paypal.com/sdk/js"]'
+      );
+      if (paypalScript) {
+        paypalScript.remove();
+      }
+    };
+  }, [id, successPay, order]);
 
   return loading ? (
     <Loader />

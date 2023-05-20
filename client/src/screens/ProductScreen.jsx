@@ -36,6 +36,7 @@ const ProductScreen = () => {
     error: reviewError,
     success: reviewSuccess,
   } = productCreateReview;
+
   const dispatch = useDispatch();
   const productListReview = useSelector((state) => state.productListReview);
   const {
@@ -49,6 +50,7 @@ const ProductScreen = () => {
   }, [dispatch, id, reviewSuccess]);
   const submitHandler = () => {
     dispatch(addToCart(id, Number(qty)));
+    navigate("/cart");
   };
   console.log(reviews, "reviews");
   return (
