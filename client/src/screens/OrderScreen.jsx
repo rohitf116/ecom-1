@@ -318,8 +318,8 @@ const PaymentScreen = () => {
                             </Link>
                           </Col>
                           <Col md={4}>
-                            {item.quantity} x ${item.price} = $
-                            {(item.quantity * item.price).toFixed(2)}
+                            {item?.quantity} x ${item?.price} = $
+                            {(item?.quantity * item?.price).toFixed(2)}
                           </Col>
                         </Row>
                       </ListGroup.Item>
