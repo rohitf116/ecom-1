@@ -198,7 +198,7 @@ exports.verifyEmailOtp = async (req, res) => {
       String(otp),
       foundEmail.otp.email.value
     );
-    console.log(201, "------------");
+
     if (!isMatch) {
       return res
         .status(400)
