@@ -5,6 +5,7 @@ import Message from "../components/Message";
 import FormContainer from "../components/FormContainer";
 import Loader from "../components/Loader";
 import axios from "axios";
+import { BASE_URL } from "../config";
 
 const useQuery = () => {
   return new URLSearchParams(useLocation().search);
@@ -39,8 +40,9 @@ const VerifyEmail = () => {
           "Content-Type": "application/json",
         },
       };
+
       const { data } = await axios.post(
-        "http://localhost:3001/api/v1/user/verify",
+        `${BASE_URL}/api/v1/user/verify`,
         { email, otp },
         config
       );

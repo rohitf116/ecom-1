@@ -178,6 +178,8 @@ export const verifyOtp = (email, otp) => async (dispatch) => {
         "Content-Type": "application/json",
       },
     };
+    const verify = `${BASE_URL}/api/v1/user/verify`;
+    console.log(verify, "verifyverifyverify");
     const { data } = await axios.post(
       `${BASE_URL}/api/v1/user/verify`,
       { email, otp },
