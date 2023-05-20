@@ -37,6 +37,7 @@ app.get("/api/config/paypal", (req, res) =>
   res.send(process.env.PAYPAL_CLIENT_ID)
 );
 const dirname = path.resolve();
+console.log(dirname,"dirmane")
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "build")));
   app.get("*", (req, res) =>
