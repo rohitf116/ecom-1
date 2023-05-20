@@ -24,7 +24,7 @@ const Header = () => {
 
   // Use the updated name if available, otherwise fallback to userInfo.name
   const userName = user?.name || userInfo?.name;
-
+//Hii
   return (
     <div>
       <header>
