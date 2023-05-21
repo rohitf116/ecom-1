@@ -39,7 +39,9 @@ const ProductListScreen = () => {
       navigate("/");
     }
   }, [navigate, dispach, userInfo, deleteSuccess, page]);
-  const createProduct = () => {};
+  const createProduct = () => {
+    navigate("/edit");
+  };
   const gotoUpdate = (product, id) => {
     console.log(product, id);
     navigate(`/update/${id}`, { state: { data: { product } } });

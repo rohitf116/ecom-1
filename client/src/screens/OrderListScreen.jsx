@@ -39,7 +39,7 @@ const OrderListScreen = () => {
   const createProduct = () => {};
   const gotoUpdate = (product, id) => {
     console.log(product, id);
-    navigate(`/update/${id}`, { state: { data: { product } } });
+    navigate(`/order/${id}`, { state: { data: { product } } });
   };
   return (
     <>
@@ -97,7 +97,7 @@ const OrderListScreen = () => {
                 </td>
                 <td> {order?.createdAt}</td>
                 <td>
-                  <Link to={`/orders/${order._id}`}>Link </Link>
+                  <Link to={`/order/${order._id}`}>Link </Link>
                 </td>
 
                 <td>
