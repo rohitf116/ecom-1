@@ -19,10 +19,10 @@ const RegisterScreen = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (userInfo && !error) {
+    if (!error && email) {
       navigate(`/verifyEmail?email=${email}`);
     }
-  }, [navigate, userInfo, error, email, dispatch]);
+  }, [navigate, error, dispatch]);
 
   const submitHandler = (e) => {
     e.preventDefault();
@@ -67,12 +67,12 @@ const RegisterScreen = () => {
           ></Form.Control>
         </Form.Group>
         <Button type="submit" className="my-3" variant="primary">
-          Login
+          Register
         </Button>
       </Form>
       <Row>
         <Col>
-          New User? <Link to="/login">Login</Link>
+          Returning User? <Link to="/login">Login</Link>
         </Col>
       </Row>
     </FormContainer>
